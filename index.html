@@ -1,0 +1,1057 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TheBoldBeginner.com | Sean Tyndale</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;1,400&family=DM+Sans:wght@300;400;500&display=swap');
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --black:        #0e0e0e;
+            --surface:      #161616;
+            --card:         #1c1c1c;
+            --border:       rgba(255,255,255,0.07);
+            --border-hover: rgba(255,255,255,0.13);
+            --mint:         #b8ddd6;
+            --mint-dim:     rgba(184,221,214,0.08);
+            --mint-border:  rgba(184,221,214,0.18);
+            --gray:         #6b7280;
+            --gray-light:   #9ca3af;
+            --white:        #f0f0ee;
+        }
+
+        body {
+            font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--black);
+            color: var(--white);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* ─── Navigation ─── */
+        nav {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            padding: 0 4%;
+            height: 60px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 100;
+            background: var(--black);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .nav-back {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--gray);
+            text-decoration: none;
+            font-size: 0.8rem;
+            font-weight: 400;
+            letter-spacing: 0.01em;
+            transition: color 0.2s ease;
+        }
+        .nav-back svg { width: 14px; height: 14px; transition: transform 0.2s ease; }
+        .nav-back:hover { color: var(--white); }
+        .nav-back:hover svg { transform: translateX(-3px); }
+
+        .nav-logo {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            font-family: 'Lora', Georgia, serif;
+            font-size: 0.95rem;
+            font-weight: 400;
+            color: var(--white);
+            text-decoration: none;
+            letter-spacing: 0.01em;
+        }
+        .nav-logo span { color: var(--mint); }
+
+        .nav-right { width: 100px; }
+
+        /* ─── Hero ─── */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 8rem 4% 3rem;
+            background: var(--black);
+            position: relative;
+        }
+
+        .hero-content {
+            text-align: center;
+            max-width: 700px;
+            margin-bottom: 3rem;
+        }
+
+        .project-meta {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .framer-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
+            background: var(--mint-dim);
+            border: 1px solid var(--mint-border);
+            padding: 0.4rem 0.9rem;
+            border-radius: 100px;
+            font-size: 0.72rem;
+            color: var(--mint);
+            font-weight: 400;
+            letter-spacing: 0.04em;
+        }
+
+        .divider {
+            width: 3px; height: 3px;
+            background: var(--gray);
+            border-radius: 50%;
+            opacity: 0.5;
+        }
+
+        .year { font-size: 0.75rem; color: var(--gray); font-weight: 300; }
+
+        .hero h1 {
+            font-family: 'Lora', Georgia, serif;
+            font-size: clamp(2.6rem, 5.5vw, 4.5rem);
+            font-weight: 400;
+            font-style: italic;
+            margin-bottom: 1.5rem;
+            letter-spacing: -0.5px;
+            line-height: 1.15;
+            color: var(--white);
+        }
+        .hero h1 strong {
+            font-style: normal;
+            font-weight: 500;
+        }
+
+        .hero-description {
+            color: var(--gray-light);
+            font-size: 1rem;
+            font-weight: 300;
+            max-width: 460px;
+            margin: 0 auto 2.5rem;
+            line-height: 1.75;
+        }
+
+        .hero-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.6rem;
+            color: var(--gray-light);
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-weight: 400;
+            padding: 0.75rem 1.5rem;
+            border: 1px solid var(--border-hover);
+            border-radius: 100px;
+            transition: all 0.25s ease;
+            background: transparent;
+            letter-spacing: 0.02em;
+        }
+        .hero-link:hover {
+            border-color: var(--mint-border);
+            color: var(--mint);
+            background: var(--mint-dim);
+        }
+        .hero-link svg { width: 14px; height: 14px; transition: transform 0.25s; }
+        .hero-link:hover svg { transform: translate(2px, -2px); }
+
+        /* ─── Showcase Carousel ─── */
+        .showcase {
+            width: 100%;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0;
+        }
+
+        /* Large flanking arrows */
+        .showcase-arrow {
+            flex-shrink: 0;
+            width: 56px; height: 56px;
+            border-radius: 50%;
+            background: transparent;
+            border: 1px solid var(--border-hover);
+            color: var(--gray-light);
+            cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            transition: border-color 0.25s, color 0.25s, background 0.25s;
+            z-index: 10;
+            margin: 0 1.5rem;
+        }
+        .showcase-arrow:hover {
+            border-color: var(--mint-border);
+            color: var(--mint);
+            background: var(--mint-dim);
+        }
+        .showcase-arrow svg { width: 22px; height: 22px; }
+
+        /* Devices row */
+        .devices-container {
+            flex: 1;
+            max-width: 1200px;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            gap: 3rem;
+            padding: 0;
+        }
+
+        .device-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1.25rem;
+        }
+
+        /* Device frames */
+        .device-desktop {
+            width: 620px; height: 388px;
+            background: #1e1e1e;
+            border-radius: 14px;
+            padding: 10px;
+            box-shadow: 0 32px 64px -16px rgba(0,0,0,0.55), 0 0 0 1px rgba(255,255,255,0.04);
+            position: relative;
+        }
+        .device-desktop::before {
+            content: '';
+            position: absolute;
+            top: -5px; left: 50%;
+            transform: translateX(-50%);
+            width: 60px; height: 5px;
+            background: #252525;
+            border-radius: 3px 3px 0 0;
+        }
+        .device-desktop-screen {
+            width: 100%; height: 100%;
+            background: var(--surface);
+            border-radius: 6px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .device-tablet {
+            width: 280px; height: 370px;
+            background: #1e1e1e;
+            border-radius: 18px;
+            padding: 9px;
+            box-shadow: 0 24px 48px -12px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.04);
+            position: relative;
+        }
+        .device-tablet::before {
+            content: '';
+            position: absolute;
+            left: 3px; top: 50%;
+            transform: translateY(-50%);
+            width: 2px; height: 32px;
+            background: #2a2a2a;
+            border-radius: 2px;
+        }
+        .device-tablet-screen {
+            width: 100%; height: 100%;
+            background: var(--surface);
+            border-radius: 11px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .device-mobile {
+            width: 175px; height: 355px;
+            background: #1e1e1e;
+            border-radius: 30px;
+            padding: 7px;
+            box-shadow: 0 20px 40px -10px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.04);
+            position: relative;
+        }
+        .device-mobile-notch {
+            position: absolute;
+            top: 11px; left: 50%;
+            transform: translateX(-50%);
+            width: 64px; height: 18px;
+            background: #1e1e1e;
+            border-radius: 10px;
+            z-index: 10;
+        }
+        .device-mobile-screen {
+            width: 100%; height: 100%;
+            background: var(--surface);
+            border-radius: 24px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Gallery images — no per-device controls */
+        .gallery-container { width: 100%; height: 100%; position: relative; }
+        .gallery-image {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            object-fit: cover;
+            object-position: top center;
+            opacity: 0;
+            transition: opacity 0.7s ease;
+        }
+        .gallery-image.active { opacity: 1; }
+
+        .device-label {
+            font-size: 0.62rem;
+            color: var(--gray);
+            text-transform: uppercase;
+            letter-spacing: 0.22em;
+            font-weight: 400;
+            opacity: 0.6;
+        }
+
+        /* Shared counter + dots below the showcase */
+        .showcase-footer {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1.5rem;
+            margin-top: 2.5rem;
+        }
+
+        .showcase-dots {
+            display: flex;
+            gap: 7px;
+            align-items: center;
+        }
+        .showcase-dot {
+            width: 5px; height: 5px;
+            border-radius: 50%;
+            background: var(--gray);
+            opacity: 0.3;
+            transition: opacity 0.3s, transform 0.3s;
+            cursor: pointer;
+        }
+        .showcase-dot.active {
+            opacity: 1;
+            background: var(--mint);
+            transform: scale(1.3);
+        }
+
+        .showcase-counter {
+            font-size: 0.68rem;
+            color: var(--gray);
+            letter-spacing: 0.12em;
+            font-variant-numeric: tabular-nums;
+        }
+
+        /* ─── Details Section ─── */
+        .details {
+            padding: 8rem 4%;
+            background: var(--black);
+        }
+
+        .details-header {
+            max-width: 1100px;
+            margin: 0 auto 52px;
+        }
+
+        .details-eyebrow {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 14px;
+        }
+
+        .details-eyebrow-label {
+            font-size: 0.7rem;
+            letter-spacing: 0.18em;
+            color: var(--gray);
+            text-transform: uppercase;
+            font-weight: 400;
+            opacity: 0;
+            animation: fadeUp 0.6s ease forwards 0.1s;
+        }
+
+        .details-eyebrow-line {
+            flex: 1;
+            height: 1px;
+            background: var(--border);
+            opacity: 0;
+            animation: fadeUp 0.6s ease forwards 0.2s;
+        }
+
+        .details-title {
+            font-family: 'Lora', Georgia, serif;
+            font-size: clamp(22px, 3vw, 34px);
+            font-weight: 400;
+            font-style: italic;
+            color: var(--white);
+            letter-spacing: -0.01em;
+            margin-bottom: 10px;
+            opacity: 0;
+            animation: fadeUp 0.7s ease forwards 0.15s;
+        }
+        .details-title span { font-style: normal; color: var(--mint); }
+
+        .details-sub {
+            font-size: 0.85rem;
+            color: var(--gray);
+            line-height: 1.7;
+            max-width: 380px;
+            font-weight: 300;
+            opacity: 0;
+            animation: fadeUp 0.7s ease forwards 0.25s;
+        }
+
+        /* Grid */
+        .details-grid {
+            max-width: 1100px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            background: transparent;
+            border-radius: 0;
+            overflow: visible;
+        }
+
+        /* Cards */
+        .detail-card {
+            position: relative;
+            background: var(--card);
+            padding: 36px 30px 40px;
+            overflow: hidden;
+            border-radius: 14px;
+            border: 1px solid var(--border);
+            opacity: 0;
+            animation: fadeUp 0.7s ease forwards;
+            transition: background 0.25s ease, border-color 0.25s ease;
+        }
+
+        .detail-card:first-child  { animation-delay: 0.3s; }
+        .detail-card:nth-child(2) { animation-delay: 0.42s; }
+        .detail-card:last-child   { animation-delay: 0.54s; }
+
+        .detail-card:hover { background: #212121; border-color: var(--border-hover); }
+
+        /* Removed card-accent glow line entirely */
+        .card-accent { display: none; }
+
+        /* Card number */
+        .card-num {
+            font-size: 0.65rem;
+            letter-spacing: 0.12em;
+            color: var(--gray);
+            opacity: 0.6;
+            margin-bottom: 22px;
+            font-weight: 300;
+        }
+
+        /* Icon */
+        .card-icon {
+            width: 36px; height: 36px;
+            border-radius: 8px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            display: flex; align-items: center; justify-content: center;
+            margin-bottom: 18px;
+            transition: border-color 0.25s, transform 0.25s;
+        }
+        .detail-card:hover .card-icon {
+            border-color: var(--mint-border);
+            transform: translateY(-1px);
+        }
+        .card-icon svg { width: 16px; height: 16px; stroke: var(--mint); }
+
+        /* Label + title */
+        .card-label {
+            font-size: 0.62rem;
+            letter-spacing: 0.16em;
+            text-transform: uppercase;
+            color: var(--mint);
+            margin-bottom: 8px;
+            font-weight: 400;
+            opacity: 0.8;
+        }
+
+        .card-title {
+            font-family: 'Lora', Georgia, serif;
+            font-size: 1.15rem;
+            font-weight: 400;
+            color: var(--white);
+            margin-bottom: 24px;
+            letter-spacing: -0.01em;
+        }
+
+        /* Divider */
+        .card-divider {
+            height: 1px;
+            background: var(--border);
+            margin-bottom: 22px;
+        }
+
+        /* Items */
+        .detail-card ul { list-style: none; display: flex; flex-direction: column; gap: 12px; }
+
+        .detail-card li {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            color: var(--gray-light);
+            font-size: 0.85rem;
+            font-weight: 300;
+            line-height: 1.55;
+        }
+
+        .card-dot {
+            flex-shrink: 0;
+            width: 4px; height: 4px;
+            border-radius: 50%;
+            background: var(--mint);
+            margin-top: 7px;
+            opacity: 0.35;
+        }
+
+        /* Animations */
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ─── Responsive ─── */
+        @media (max-width: 900px) {
+            .details-grid { grid-template-columns: 1fr; gap: 16px; }
+            .details { padding: 5rem 5%; }
+            .details-header { margin-bottom: 36px; }
+            .detail-card { padding: 28px 22px 32px; }
+        }
+
+        @media (max-width: 500px) {
+            .nav-back span { display: none; }
+            .nav-right { display: none; }
+            .nav-logo { position: static; transform: none; margin: 0 auto; }
+            .hero { padding: 7rem 5% 3rem; min-height: auto; }
+            .hero-content { margin-bottom: 2.5rem; }
+        }
+        /* ─── Device Toggle Showcase ─── */
+
+        /* Pill toggle switcher */
+        .device-toggle {
+            display: flex;
+            align-items: center;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 100px;
+            padding: 4px;
+            gap: 2px;
+            margin-bottom: 2.5rem;
+        }
+
+        .device-toggle-btn {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            padding: 8px 18px;
+            border-radius: 100px;
+            border: none;
+            background: transparent;
+            color: var(--gray);
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.75rem;
+            font-weight: 400;
+            letter-spacing: 0.08em;
+            cursor: pointer;
+            transition: color 0.2s, background 0.2s;
+        }
+        .device-toggle-btn svg { width: 14px; height: 14px; }
+        .device-toggle-btn.active {
+            background: var(--card);
+            color: var(--white);
+            border: 1px solid var(--border-hover);
+        }
+        .device-toggle-btn:not(.active):hover { color: var(--gray-light); }
+
+        /* Showcase wrap */
+        .showcase-wrap {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0;
+        }
+
+        /* Flanking arrows */
+        .showcase-arrow {
+            flex-shrink: 0;
+            width: 52px; height: 52px;
+            border-radius: 50%;
+            background: transparent;
+            border: 1px solid var(--border-hover);
+            color: var(--gray-light);
+            cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            transition: border-color 0.25s, color 0.25s, background 0.25s;
+            margin: 0 1.5rem;
+        }
+        .showcase-arrow:hover {
+            border-color: var(--mint-border);
+            color: var(--mint);
+            background: var(--mint-dim);
+        }
+        .showcase-arrow svg { width: 20px; height: 20px; }
+
+        /* Device panels — only active one visible */
+        .device-panel {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+        }
+        .device-panel.active { display: flex; }
+
+        /* Device frames */
+        .device-desktop {
+            width: 860px; height: 538px;
+            background: #1e1e1e;
+            border-radius: 14px;
+            padding: 10px;
+            box-shadow: 0 32px 64px -16px rgba(0,0,0,0.55), 0 0 0 1px rgba(255,255,255,0.04);
+            position: relative;
+        }
+        .device-desktop::before {
+            content: '';
+            position: absolute;
+            top: -5px; left: 50%;
+            transform: translateX(-50%);
+            width: 60px; height: 5px;
+            background: #252525;
+            border-radius: 3px 3px 0 0;
+        }
+        .device-desktop-screen {
+            width: 100%; height: 100%;
+            background: var(--surface);
+            border-radius: 6px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .device-tablet {
+            width: 420px; height: 560px;
+            background: #1e1e1e;
+            border-radius: 20px;
+            padding: 10px;
+            box-shadow: 0 28px 56px -14px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.04);
+            position: relative;
+        }
+        .device-tablet::before {
+            content: '';
+            position: absolute;
+            left: 3px; top: 50%;
+            transform: translateY(-50%);
+            width: 3px; height: 44px;
+            background: #2a2a2a;
+            border-radius: 2px;
+        }
+        .device-tablet-screen {
+            width: 100%; height: 100%;
+            background: var(--surface);
+            border-radius: 12px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .device-mobile {
+            width: 300px; height: 620px;
+            background: #1e1e1e;
+            border-radius: 42px;
+            padding: 10px;
+            box-shadow: 0 28px 56px -14px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.04);
+            position: relative;
+        }
+        .device-mobile-notch {
+            position: absolute;
+            top: 14px; left: 50%;
+            transform: translateX(-50%);
+            width: 90px; height: 26px;
+            background: #1e1e1e;
+            border-radius: 13px;
+            z-index: 10;
+        }
+        .device-mobile-screen {
+            width: 100%; height: 100%;
+            background: var(--surface);
+            border-radius: 33px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .gallery-container { width: 100%; height: 100%; position: relative; }
+        .gallery-image {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            object-fit: cover;
+            object-position: top center;
+            opacity: 0;
+            transition: opacity 0.7s ease;
+        }
+        .gallery-image.active { opacity: 1; }
+
+        .device-label {
+            font-size: 0.62rem;
+            color: var(--gray);
+            text-transform: uppercase;
+            letter-spacing: 0.22em;
+            font-weight: 400;
+            opacity: 0.5;
+        }
+
+        /* Shared footer: dots + counter */
+        .showcase-footer {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1.25rem;
+            margin-top: 1.75rem;
+        }
+
+        .showcase-dots { display: flex; gap: 8px; align-items: center; }
+        .showcase-dot {
+            width: 6px; height: 6px;
+            border-radius: 50%;
+            background: var(--gray);
+            opacity: 0.3;
+            border: none;
+            cursor: pointer;
+            padding: 0;
+            transition: opacity 0.3s, transform 0.3s, background 0.3s;
+        }
+        .showcase-dot.active {
+            opacity: 1;
+            background: var(--mint);
+            transform: scale(1.4);
+        }
+
+        .showcase-counter {
+            font-size: 0.68rem;
+            color: var(--gray);
+            letter-spacing: 0.12em;
+            font-variant-numeric: tabular-nums;
+        }
+
+        /* Responsive */
+        @media (max-width: 1100px) {
+            .device-desktop { width: min(720px, 88vw); height: auto; aspect-ratio: 16/10; }
+            .device-tablet  { width: min(360px, 72vw); height: auto; aspect-ratio: 3/4; }
+            .device-mobile  { width: min(260px, 60vw); height: auto; aspect-ratio: 9/18.5; }
+            .showcase-arrow { width: 44px; height: 44px; margin: 0 0.75rem; }
+            .showcase-arrow svg { width: 17px; height: 17px; }
+        }
+
+        @media (max-width: 700px) {
+            .device-desktop { width: 92vw; }
+            .device-tablet  { width: 62vw; }
+            .device-mobile  { width: 52vw; }
+            .showcase-arrow { display: none; }
+            .device-toggle-btn { padding: 7px 13px; font-size: 0.7rem; gap: 5px; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <a href="index.html" class="nav-back">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M19 12H5M12 5l-7 7 7 7"/>
+            </svg>
+            All Projects
+        </a>
+        <a href="index.html" class="nav-logo">sean<span>.</span>tyndale</a>
+        <div class="nav-right"></div>
+    </nav>
+
+    <!-- ─── Hero ─── -->
+    <section class="hero">
+        <div class="hero-content">
+            <div class="project-meta">
+                <span class="framer-pill">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M4 0h16v8h-8zm0 8h8l8 8H4zm0 8h8v8z"/>
+                    </svg>
+                    Framer
+                </span>
+                <span class="divider"></span>
+                <span class="year">2024</span>
+            </div>
+
+            <h1>The <strong>bold beginner</strong></h1>
+
+            <p class="hero-description">
+                A complete Figma-to-Framer transformation featuring responsive design,
+                dynamic CMS architecture, and integrated marketing automation.
+            </p>
+
+            <a href="https://theboldbeginner.com" target="_blank" class="hero-link">
+                Visit Live Site
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M7 17L17 7M17 7H7M17 7V17"/>
+                </svg>
+            </a>
+        </div>
+
+        <!-- Device toggle pill -->
+        <div class="device-toggle">
+            <button class="device-toggle-btn active" data-device="desktop">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="14" rx="2"/><path d="M8 20h8M12 18v2"/></svg>
+                Desktop
+            </button>
+            <button class="device-toggle-btn" data-device="tablet">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20" rx="2"/><path d="M12 18h.01"/></svg>
+                Tablet
+            </button>
+            <button class="device-toggle-btn" data-device="mobile">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2"/><path d="M12 18h.01"/></svg>
+                Mobile
+            </button>
+        </div>
+
+        <!-- Showcase: arrows + active device panel -->
+        <div class="showcase-wrap">
+
+            <button class="showcase-arrow" id="arrow-prev" aria-label="Previous slide">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+            </button>
+
+            <!-- Desktop panel -->
+            <div class="device-panel active" id="panel-desktop">
+                <div class="device-desktop">
+                    <div class="device-desktop-screen">
+                        <div class="gallery-container" id="desktop-gallery">
+                            <img src="images/desktop-1.png" class="gallery-image active" alt="Desktop 1">
+                            <img src="images/desktop-2.png" class="gallery-image" alt="Desktop 2">
+                            <img src="images/desktop-3.png" class="gallery-image" alt="Desktop 3">
+                            <img src="images/desktop-4.png" class="gallery-image" alt="Desktop 4">
+                            <img src="images/desktop-5.png" class="gallery-image" alt="Desktop 5">
+                            <img src="images/desktop-6.png" class="gallery-image" alt="Desktop 6">
+                        </div>
+                    </div>
+                </div>
+                <span class="device-label">Desktop</span>
+            </div>
+
+            <!-- Tablet panel -->
+            <div class="device-panel" id="panel-tablet">
+                <div class="device-tablet">
+                    <div class="device-tablet-screen">
+                        <div class="gallery-container" id="tablet-gallery">
+                            <img src="images/tablet-1.png" class="gallery-image active" alt="Tablet 1">
+                            <img src="images/tablet-2.png" class="gallery-image" alt="Tablet 2">
+                            <img src="images/tablet-3.png" class="gallery-image" alt="Tablet 3">
+                            <img src="images/tablet-4.png" class="gallery-image" alt="Tablet 4">
+                            <img src="images/tablet-5.png" class="gallery-image" alt="Tablet 5">
+                            <img src="images/tablet-6.png" class="gallery-image" alt="Tablet 6">
+                        </div>
+                    </div>
+                </div>
+                <span class="device-label">Tablet</span>
+            </div>
+
+            <!-- Mobile panel -->
+            <div class="device-panel" id="panel-mobile">
+                <div class="device-mobile">
+                    <div class="device-mobile-notch"></div>
+                    <div class="device-mobile-screen">
+                        <div class="gallery-container" id="mobile-gallery">
+                            <img src="images/mobile-1.png" class="gallery-image active" alt="Mobile 1">
+                            <img src="images/mobile-2.png" class="gallery-image" alt="Mobile 2">
+                            <img src="images/mobile-3.png" class="gallery-image" alt="Mobile 3">
+                            <img src="images/mobile-4.png" class="gallery-image" alt="Mobile 4">
+                            <img src="images/mobile-5.png" class="gallery-image" alt="Mobile 5">
+                            <img src="images/mobile-6.png" class="gallery-image" alt="Mobile 6">
+                        </div>
+                    </div>
+                </div>
+                <span class="device-label">Mobile</span>
+            </div>
+
+            <button class="showcase-arrow" id="arrow-next" aria-label="Next slide">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+            </button>
+
+        </div>
+
+        <!-- Shared dots + counter -->
+        <div class="showcase-footer">
+            <div class="showcase-dots" id="showcase-dots"></div>
+            <span class="showcase-counter" id="showcase-counter">1 / 6</span>
+        </div>
+
+    </section>
+
+    <!-- ─── Details / Feature Section ─── -->
+    <section class="details">
+        <div class="details-header">
+            <div class="details-eyebrow">
+                <span class="details-eyebrow-label">what's inside</span>
+                <div class="details-eyebrow-line"></div>
+            </div>
+            <h2 class="details-title">Built with <span>precision.</span></h2>
+            <p class="details-sub">Every layer of this site — from design system to live integrations — crafted to perform.</p>
+        </div>
+
+        <div class="details-grid">
+
+            <!-- Card 1 -->
+            <div class="detail-card">
+                <div class="card-accent"></div>
+                <div class="card-num">01</div>
+                <div class="card-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/>
+                    </svg>
+                </div>
+                <div class="card-label">01 of 03</div>
+                <div class="card-title">Implementation</div>
+                <div class="card-divider"></div>
+                <ul>
+                    <li><span class="card-dot"></span>Figma design translation</li>
+                    <li><span class="card-dot"></span>Responsive breakpoint system</li>
+                    <li><span class="card-dot"></span>Dynamic header & footer</li>
+                    <li><span class="card-dot"></span>Newsletter section design</li>
+                </ul>
+            </div>
+
+            <!-- Card 2 -->
+            <div class="detail-card">
+                <div class="card-accent"></div>
+                <div class="card-num">02</div>
+                <div class="card-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M4 6h16M4 12h16M4 18h10"/><circle cx="19" cy="18" r="3"/>
+                    </svg>
+                </div>
+                <div class="card-label">02 of 03</div>
+                <div class="card-title">Content Management</div>
+                <div class="card-divider"></div>
+                <ul>
+                    <li><span class="card-dot"></span>Podcasts collection</li>
+                    <li><span class="card-dot"></span>YouTube video library</li>
+                    <li><span class="card-dot"></span>Blog post architecture</li>
+                    <li><span class="card-dot"></span>Dynamic page templates</li>
+                </ul>
+            </div>
+
+            <!-- Card 3 -->
+            <div class="detail-card">
+                <div class="card-accent"></div>
+                <div class="card-num">03</div>
+                <div class="card-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/>
+                    </svg>
+                </div>
+                <div class="card-label">03 of 03</div>
+                <div class="card-title">Integrations</div>
+                <div class="card-divider"></div>
+                <ul>
+                    <li><span class="card-dot"></span>Mailchimp form synchronization</li>
+                    <li><span class="card-dot"></span>Systeme.io automation</li>
+                    <li><span class="card-dot"></span>Email list workflows</li>
+                    <li><span class="card-dot"></span>Lead capture optimization</li>
+                </ul>
+            </div>
+
+        </div>
+    </section>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const TOTAL = 6;
+            const AUTOPLAY_MS = 3500;
+            const RESUME_MS = 6000;
+
+            const devices = ['desktop', 'tablet', 'mobile'];
+            let currentSlide = 0;
+            let timer = null;
+
+            // Gallery images per device
+            const galleries = {};
+            devices.forEach(d => {
+                galleries[d] = Array.from(document.getElementById(`${d}-gallery`).querySelectorAll('.gallery-image'));
+            });
+
+            // Dots
+            const dotsContainer = document.getElementById('showcase-dots');
+            for (let i = 0; i < TOTAL; i++) {
+                const dot = document.createElement('button');
+                dot.className = 'showcase-dot' + (i === 0 ? ' active' : '');
+                dot.setAttribute('aria-label', `Slide ${i + 1}`);
+                dot.addEventListener('click', () => goTo(i, true));
+                dotsContainer.appendChild(dot);
+            }
+            const dots = Array.from(dotsContainer.querySelectorAll('.showcase-dot'));
+            const counter = document.getElementById('showcase-counter');
+
+            function goTo(index, manual = false) {
+                if (index < 0) index = TOTAL - 1;
+                if (index >= TOTAL) index = 0;
+
+                // Advance all three galleries together
+                devices.forEach(d => {
+                    galleries[d][currentSlide].classList.remove('active');
+                    galleries[d][index].classList.add('active');
+                });
+
+                dots[currentSlide].classList.remove('active');
+                dots[index].classList.add('active');
+                counter.textContent = `${index + 1} / ${TOTAL}`;
+                currentSlide = index;
+
+                if (manual) {
+                    clearInterval(timer);
+                    setTimeout(startAutoplay, RESUME_MS);
+                }
+            }
+
+            function startAutoplay() {
+                clearInterval(timer);
+                timer = setInterval(() => goTo(currentSlide + 1), AUTOPLAY_MS);
+            }
+
+            // Prev / Next arrows
+            document.getElementById('arrow-prev').addEventListener('click', () => goTo(currentSlide - 1, true));
+            document.getElementById('arrow-next').addEventListener('click', () => goTo(currentSlide + 1, true));
+
+            // Device toggle buttons
+            document.querySelectorAll('.device-toggle-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const target = btn.dataset.device;
+
+                    // Update toggle pill active state
+                    document.querySelectorAll('.device-toggle-btn').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+
+                    // Show correct panel
+                    document.querySelectorAll('.device-panel').forEach(p => p.classList.remove('active'));
+                    document.getElementById(`panel-${target}`).classList.add('active');
+                });
+            });
+
+            // Preload all images
+            devices.forEach(d => galleries[d].forEach(img => { new Image().src = img.src; }));
+
+            startAutoplay();
+        });
+    </script>
+
+</body>
+</html>
