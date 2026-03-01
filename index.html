@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sean Tyndale — Creative Developer</title>
+    <meta name="description" content="Sean Tyndale — Creative Developer. Framer design, front-end development, and React Native.">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;1,400;1,500&family=DM+Sans:wght@300;400;500&display=swap');
+
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --black:        #0e0e0e;
+            --surface:      #161616;
+            --card:         #1a1a1a;
+            --border:       rgba(255,255,255,0.07);
+            --border-hover: rgba(255,255,255,0.13);
+            --mint:         #b8ddd6;
+            --mint-dim:     rgba(184,221,214,0.08);
+            --mint-border:  rgba(184,221,214,0.18);
+            --gray:         #6b7280;
+            --gray-light:   #9ca3af;
+            --white:        #f0f0ee;
+        }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: 'DM Sans', -apple-system, sans-serif;
+            background: var(--black);
+            color: var(--white);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* ─── Nav ─── */
+        nav {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            height: 60px;
+            padding: 0 5%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            z-index: 100;
+            background: var(--black);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .nav-logo {
+            font-family: 'Lora', Georgia, serif;
+            font-size: 0.95rem;
+            font-weight: 400;
+            color: var(--white);
+            text-decoration: none;
+            letter-spacing: 0.01em;
+        }
+        .nav-logo span { color: var(--mint); }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+            list-style: none;
+        }
+        .nav-links a {
+            font-size: 0.8rem;
+            font-weight: 400;
+            color: var(--gray);
+            text-decoration: none;
+            letter-spacing: 0.04em;
+            transition: color 0.2s;
+        }
+        .nav-links a:hover { color: var(--white); }
+
+        /* ─── Hero ─── */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            padding: 0 5%;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Subtle background texture */
+        .hero::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background:
+                radial-gradient(ellipse 60% 50% at 70% 40%, rgba(184,221,214,0.03) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .hero-inner {
+            max-width: 860px;
+            opacity: 0;
+            animation: fadeUp 0.9s ease forwards 0.2s;
+        }
+
+        .hero-eyebrow {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 2rem;
+        }
+
+        .hero-eyebrow-dot {
+            width: 6px; height: 6px;
+            border-radius: 50%;
+            background: var(--mint);
+            opacity: 0.6;
+        }
+
+        .hero-eyebrow-text {
+            font-size: 0.72rem;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            color: var(--gray);
+            font-weight: 400;
+        }
+
+        .hero h1 {
+            font-family: 'Lora', Georgia, serif;
+            font-size: clamp(2.8rem, 6vw, 5.5rem);
+            font-weight: 400;
+            line-height: 1.1;
+            letter-spacing: -0.5px;
+            color: var(--white);
+            margin-bottom: 1.75rem;
+        }
+
+        .hero h1 em {
+            font-style: italic;
+            color: var(--mint);
+        }
+
+        .hero-bio {
+            font-size: 1rem;
+            font-weight: 300;
+            color: var(--gray-light);
+            max-width: 480px;
+            line-height: 1.8;
+            margin-bottom: 2.5rem;
+        }
+
+        .hero-cta {
+            display: flex;
+            align-items: center;
+            gap: 1.25rem;
+            flex-wrap: wrap;
+        }
+
+        .btn-primary {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            background: var(--mint-dim);
+            border: 1px solid var(--mint-border);
+            border-radius: 100px;
+            color: var(--mint);
+            font-size: 0.82rem;
+            font-weight: 400;
+            text-decoration: none;
+            letter-spacing: 0.03em;
+            transition: all 0.25s ease;
+        }
+        .btn-primary:hover {
+            background: rgba(184,221,214,0.14);
+            border-color: rgba(184,221,214,0.35);
+        }
+
+        .btn-ghost {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            border: 1px solid var(--border-hover);
+            border-radius: 100px;
+            color: var(--gray-light);
+            font-size: 0.82rem;
+            font-weight: 400;
+            text-decoration: none;
+            letter-spacing: 0.03em;
+            transition: all 0.25s ease;
+        }
+        .btn-ghost:hover { border-color: rgba(255,255,255,0.25); color: var(--white); }
+
+        .hero-scroll {
+            position: absolute;
+            bottom: 2.5rem; left: 5%;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            opacity: 0;
+            animation: fadeUp 0.8s ease forwards 0.9s;
+        }
+        .hero-scroll-line {
+            width: 32px; height: 1px;
+            background: var(--gray);
+            opacity: 0.4;
+        }
+        .hero-scroll-text {
+            font-size: 0.65rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--gray);
+            opacity: 0.5;
+        }
+
+        /* ─── Section shared ─── */
+        section { padding: 7rem 5%; }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 52px;
+        }
+        .section-label {
+            font-size: 0.68rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--gray);
+            white-space: nowrap;
+            font-weight: 400;
+        }
+        .section-rule {
+            flex: 1;
+            height: 1px;
+            background: var(--border);
+        }
+
+        /* ─── Projects ─── */
+        .projects { background: var(--black); }
+
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            max-width: 1200px;
+        }
+
+        .project-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            overflow: hidden;
+            text-decoration: none;
+            display: flex;
+            flex-direction: column;
+            transition: border-color 0.25s, background 0.25s, transform 0.25s;
+            opacity: 0;
+            animation: fadeUp 0.7s ease forwards;
+        }
+        .project-card:nth-child(1) { animation-delay: 0.1s; }
+        .project-card:nth-child(2) { animation-delay: 0.22s; }
+        .project-card:nth-child(3) { animation-delay: 0.34s; }
+
+        .project-card:hover {
+            border-color: var(--border-hover);
+            background: #202020;
+            transform: translateY(-3px);
+        }
+
+        .project-card.coming-soon {
+            opacity: 0.45;
+            cursor: default;
+            pointer-events: none;
+            animation-delay: 0.22s;
+        }
+        .project-card.coming-soon:nth-child(3) { animation-delay: 0.34s; }
+
+        .project-thumb {
+            width: 100%;
+            aspect-ratio: 16 / 9;
+            background: var(--surface);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .project-thumb img {
+            width: 100%; height: 100%;
+            object-fit: cover;
+            object-position: top;
+            transition: transform 0.5s ease;
+        }
+        .project-card:hover .project-thumb img { transform: scale(1.03); }
+
+        .project-thumb-placeholder {
+            width: 100%; height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .project-thumb-placeholder span {
+            font-size: 0.65rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--gray);
+            opacity: 0.4;
+        }
+
+        .project-body {
+            padding: 22px 22px 24px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .project-tags {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+            margin-bottom: 4px;
+        }
+
+        .project-tag {
+            font-size: 0.62rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--mint);
+            background: var(--mint-dim);
+            border: 1px solid var(--mint-border);
+            padding: 3px 8px;
+            border-radius: 100px;
+            font-weight: 400;
+            opacity: 0.85;
+        }
+
+        .project-name {
+            font-family: 'Lora', Georgia, serif;
+            font-size: 1.1rem;
+            font-weight: 400;
+            color: var(--white);
+            letter-spacing: -0.01em;
+        }
+
+        .project-desc {
+            font-size: 0.82rem;
+            font-weight: 300;
+            color: var(--gray);
+            line-height: 1.6;
+        }
+
+        .project-arrow {
+            margin-top: auto;
+            padding-top: 14px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.72rem;
+            letter-spacing: 0.08em;
+            color: var(--gray);
+            transition: color 0.2s, gap 0.2s;
+        }
+        .project-card:hover .project-arrow { color: var(--mint); gap: 10px; }
+        .project-arrow svg { width: 13px; height: 13px; }
+
+        /* ─── Dev Section ─── */
+        .dev { background: var(--black); border-top: 1px solid var(--border); }
+
+        .dev-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            max-width: 1200px;
+        }
+
+        .dev-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 32px 30px 36px;
+            opacity: 0;
+            animation: fadeUp 0.7s ease forwards;
+            transition: background 0.25s, border-color 0.25s;
+        }
+        .dev-card:hover { background: #202020; border-color: var(--border-hover); }
+        .dev-card:nth-child(1) { animation-delay: 0.1s; }
+        .dev-card:nth-child(2) { animation-delay: 0.22s; }
+        .dev-card:nth-child(3) { grid-column: 1 / -1; animation-delay: 0.34s; }
+
+        .dev-card-icon {
+            width: 38px; height: 38px;
+            border-radius: 9px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            display: flex; align-items: center; justify-content: center;
+            margin-bottom: 20px;
+            transition: border-color 0.25s;
+        }
+        .dev-card:hover .dev-card-icon { border-color: var(--mint-border); }
+        .dev-card-icon svg { width: 17px; height: 17px; stroke: var(--mint); }
+
+        .dev-card-label {
+            font-size: 0.62rem;
+            letter-spacing: 0.16em;
+            text-transform: uppercase;
+            color: var(--mint);
+            opacity: 0.75;
+            margin-bottom: 8px;
+        }
+
+        .dev-card-title {
+            font-family: 'Lora', Georgia, serif;
+            font-size: 1.1rem;
+            font-weight: 400;
+            color: var(--white);
+            margin-bottom: 12px;
+            letter-spacing: -0.01em;
+        }
+
+        .dev-card-body {
+            font-size: 0.84rem;
+            font-weight: 300;
+            color: var(--gray-light);
+            line-height: 1.7;
+        }
+
+        .dev-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            margin-top: 16px;
+            padding: 4px 10px;
+            background: var(--mint-dim);
+            border: 1px solid var(--mint-border);
+            border-radius: 100px;
+            font-size: 0.65rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--mint);
+            opacity: 0.8;
+        }
+        .dev-badge svg { width: 10px; height: 10px; fill: var(--mint); }
+
+        /* Skills row inside the wide card */
+        .dev-skills {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 16px;
+        }
+        .dev-skill {
+            font-size: 0.72rem;
+            font-weight: 400;
+            color: var(--gray-light);
+            background: var(--surface);
+            border: 1px solid var(--border);
+            padding: 5px 12px;
+            border-radius: 100px;
+            letter-spacing: 0.04em;
+        }
+
+        /* ─── Footer ─── */
+        footer {
+            padding: 3rem 5%;
+            border-top: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .footer-name {
+            font-family: 'Lora', Georgia, serif;
+            font-size: 0.9rem;
+            color: var(--gray);
+            font-weight: 400;
+        }
+        .footer-name span { color: var(--mint); }
+
+        .footer-copy {
+            font-size: 0.72rem;
+            color: var(--gray);
+            opacity: 0.5;
+            letter-spacing: 0.04em;
+        }
+
+        /* ─── Animations ─── */
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(22px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ─── Responsive ─── */
+        @media (max-width: 900px) {
+            .projects-grid { grid-template-columns: 1fr; max-width: 480px; }
+            .dev-grid { grid-template-columns: 1fr; }
+            .dev-card:nth-child(3) { grid-column: auto; }
+        }
+
+        @media (max-width: 600px) {
+            nav { padding: 0 5%; }
+            .nav-links { gap: 1.25rem; }
+            .hero h1 { font-size: clamp(2.2rem, 9vw, 3.2rem); }
+            section { padding: 5rem 5%; }
+            footer { flex-direction: column; align-items: flex-start; }
+        }
+
+        @media (max-width: 420px) {
+            .nav-links li:not(:last-child) { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <a href="#" class="nav-logo">sean<span>.</span>tyndale</a>
+        <ul class="nav-links">
+            <li><a href="#projects">Projects</a></li>
+            <li><a href="#dev">Dev</a></li>
+            <li><a href="/cdn-cgi/l/email-protection#fa929f969695ba899f9b948e83949e9b969fd4999597">Contact</a></li>
+        </ul>
+    </nav>
+
+    <!-- ─── Hero ─── -->
+    <section class="hero">
+        <div class="hero-inner">
+            <div class="hero-eyebrow">
+                <div class="hero-eyebrow-dot"></div>
+                <span class="hero-eyebrow-text">Creative Developer — Available for work</span>
+            </div>
+            <h1>Design that works.<br><em>Code that delivers.</em></h1>
+            <p class="hero-bio">
+                I build clean, purposeful websites and front-end experiences — from Figma to Framer, to production-ready React Native. Based wherever the work takes me.
+            </p>
+            <div class="hero-cta">
+                <a href="#projects" class="btn-primary">
+                    View Projects
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M17 7H7M17 7V17"/></svg>
+                </a>
+                <a href="/cdn-cgi/l/email-protection#630b060f0f0c231006020d171a0d07020f064d000c0e" class="btn-ghost">Get in touch</a>
+            </div>
+        </div>
+        <div class="hero-scroll">
+            <div class="hero-scroll-line"></div>
+            <span class="hero-scroll-text">Scroll</span>
+        </div>
+    </section>
+
+    <!-- ─── Projects ─── -->
+    <section class="projects" id="projects">
+        <div class="section-header">
+            <span class="section-label">Selected work</span>
+            <div class="section-rule"></div>
+        </div>
+
+        <div class="projects-grid">
+
+            <!-- Project 1 — The Bold Beginner -->
+            <a href="theboldbeginner/index.html" class="project-card">
+                <div class="project-thumb">
+                    <img src="theboldbeginner/images/desktop-1.png" alt="The bold beginner">
+                </div>
+                <div class="project-body">
+                    <div class="project-tags">
+                        <span class="project-tag">Framer</span>
+                        <span class="project-tag">CMS</span>
+                        <span class="project-tag">Mailchimp</span>
+                    </div>
+                    <div class="project-name">The bold beginner</div>
+                    <div class="project-desc">Figma-to-Framer build with dynamic CMS, podcast library, and marketing automation.</div>
+                    <div class="project-arrow">
+                        View case study
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M17 7H7M17 7V17"/></svg>
+                    </div>
+                </div>
+            </a>
+
+            <!-- Project 2 — Coming soon -->
+            <div class="project-card coming-soon">
+                <div class="project-thumb">
+                    <div class="project-thumb-placeholder">
+                        <span>Coming soon</span>
+                    </div>
+                </div>
+                <div class="project-body">
+                    <div class="project-tags">
+                        <span class="project-tag">Framer</span>
+                    </div>
+                    <div class="project-name">Untitled project</div>
+                    <div class="project-desc">Next Framer build — currently in progress.</div>
+                </div>
+            </div>
+
+            <!-- Project 3 — Coming soon -->
+            <div class="project-card coming-soon">
+                <div class="project-thumb">
+                    <div class="project-thumb-placeholder">
+                        <span>Coming soon</span>
+                    </div>
+                </div>
+                <div class="project-body">
+                    <div class="project-tags">
+                        <span class="project-tag">Framer</span>
+                    </div>
+                    <div class="project-name">Untitled project</div>
+                    <div class="project-desc">Next Framer build — currently in progress.</div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- ─── Dev ─── -->
+    <section class="dev" id="dev">
+        <div class="section-header">
+            <span class="section-label">Development</span>
+            <div class="section-rule"></div>
+        </div>
+
+        <div class="dev-grid">
+
+            <!-- Hackathons -->
+            <div class="dev-card">
+                <div class="dev-card-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
+                    </svg>
+                </div>
+                <div class="dev-card-label">Hackathons</div>
+                <div class="dev-card-title">Two competed. One won.</div>
+                <div class="dev-card-body">
+                    Entered two competitive hackathons building front-end features under real time pressure. Took first place in one — shipping a working React Native feature from concept to demo in under 48 hours.
+                </div>
+                <div class="dev-badge">
+                    <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                    1st place
+                </div>
+            </div>
+
+            <!-- React Native -->
+            <div class="dev-card">
+                <div class="dev-card-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                        <ellipse cx="12" cy="12" rx="10" ry="4"/>
+                        <ellipse cx="12" cy="12" rx="10" ry="4" transform="rotate(60 12 12)"/>
+                        <ellipse cx="12" cy="12" rx="10" ry="4" transform="rotate(120 12 12)"/>
+                    </svg>
+                </div>
+                <div class="dev-card-label">React Native</div>
+                <div class="dev-card-title">Front-end in motion.</div>
+                <div class="dev-card-body">
+                    Built and shipped real front-end features using React Native — from UI components and navigation flows to integrations with live data. Learning fast, building faster.
+                </div>
+            </div>
+
+            <!-- Skills / learning -->
+            <div class="dev-card">
+                <div class="dev-card-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 20h9M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/>
+                    </svg>
+                </div>
+                <div class="dev-card-label">Currently learning</div>
+                <div class="dev-card-title">Going deep on the craft.</div>
+                <div class="dev-card-body">
+                    Actively expanding across the front-end stack — component architecture, state management, performance patterns, and design-to-code workflows. Every project is a classroom.
+                </div>
+                <div class="dev-skills">
+                    <span class="dev-skill">React Native</span>
+                    <span class="dev-skill">Component Architecture</span>
+                    <span class="dev-skill">State Management</span>
+                    <span class="dev-skill">Framer</span>
+                    <span class="dev-skill">CSS Systems</span>
+                    <span class="dev-skill">Design Tokens</span>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- ─── Footer ─── */
+    <footer>
+        <span class="footer-name">sean<span>.</span>tyndale</span>
+        <span cl
