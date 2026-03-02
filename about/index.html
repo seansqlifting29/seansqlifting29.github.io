@@ -52,15 +52,19 @@
         }
         .nav-logo span { color: var(--mint); }
 
-        .nav-links { display: flex; align-items: center; gap: 2rem; list-style: none; }
-        .nav-links a {
-            font-size: 0.8rem;
+        .nav-back {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
             color: var(--gray);
             text-decoration: none;
-            letter-spacing: 0.04em;
-            transition: color 0.2s;
+            font-size: 0.8rem;
+            letter-spacing: 0.01em;
+            transition: color 0.2s ease;
         }
-        .nav-links a:hover, .nav-links a.active { color: var(--white); }
+        .nav-back svg { width: 14px; height: 14px; transition: transform 0.2s ease; }
+        .nav-back:hover { color: var(--white); }
+        .nav-back:hover svg { transform: translateX(-3px); }
 
         /* ─── About layout ─── */
         .about-hero {
@@ -318,13 +322,13 @@
 <body>
 
     <nav>
-        <a href="index.html" class="nav-logo">sean<span>.</span>tyndale</a>
-        <ul class="nav-links">
-            <li><a href="index.html#projects">Projects</a></li>
-            <li><a href="index.html#dev">Dev</a></li>
-            <li><a href="about.html" class="active">About</a></li>
-            <li><a href="index.html#contact">Contact</a></li>
-        </ul>
+        <a href="https://seantyndale.com" class="nav-logo">sean<span>.</span>tyndale</a>
+        <a href="https://seantyndale.com" class="nav-back">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M19 12H5M12 5l-7 7 7 7"/>
+            </svg>
+            Back to projects
+        </a>
     </nav>
 
     <div class="about-hero">
