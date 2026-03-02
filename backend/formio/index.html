@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>formio-stats — Sean Tyndale</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;1,400&family=DM+Sans:wght@300;400;500&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --black:#0a0a0a; --surface:#111; --card:#161616; --card2:#1a1a1a;
+    --border:rgba(255,255,255,.07); --border-hi:rgba(255,255,255,.13);
+    --mint:#b8ddd6; --mint-dim:rgba(184,221,214,.08); --mint-border:rgba(184,221,214,.2);
+    --gray:#6b7280; --gray-light:#9ca3af; --white:#f0f0ee;
+    --green:#4ade80; --red:#f87171; --amber:#fbbf24;
+    --code-bg:#0d1117;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:'DM Sans',sans-serif;background:var(--black);color:var(--white);min-height:100vh;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+
+  /* NAV */
+  nav{position:fixed;top:0;left:0;right:0;height:60px;padding:0 5%;display:flex;align-items:center;justify-content:space-between;z-index:100;background:rgba(10,10,10,.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--border)}
+  .nav-logo{font-family:'Lora',serif;font-size:.95rem;color:var(--white);text-decoration:none}
+  .nav-logo span{color:var(--mint)}
+  .nav-back{display:inline-flex;align-items:center;gap:6px;font-size:.78rem;color:var(--gray);text-decoration:none;transition:color .2s}
+  .nav-back:hover{color:var(--white)}
+  .nav-back svg{width:14px;height:14px;transition:transform .2s}
+  .nav-back:hover svg{transform:translateX(-3px)}
+
+  /* HERO */
+  .hero{padding:96px 6% 40px;max-width:1280px;margin:0 auto}
+  .eyebrow{display:flex;align-items:center;gap:10px;margin-bottom:1.1rem}
+  .eyebrow-dot{width:6px;height:6px;border-radius:50%;background:var(--mint);opacity:.6}
+  .eyebrow-text{font-size:.67rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gray)}
+  .hero h1{font-family:'Lora',serif;font-size:clamp(1.8rem,3vw,2.8rem);font-weight:400;line-height:1.1;letter-spacing:-.3px;margin-bottom:.7rem}
+  .hero h1 em{font-style:italic;color:var(--mint)}
+  .hero-desc{font-size:.88rem;font-weight:300;color:var(--gray-light);line-height:1.8;max-width:600px;margin-bottom:1.4rem}
+  .tag{display:inline-block;padding:4px 13px;border:1px solid var(--border-hi);border-radius:100px;font-size:.67rem;letter-spacing:.07em;color:var(--gray-light);font-family:'JetBrains Mono',monospace;margin:0 4px 4px 0}
+  .tag.mint{border-color:var(--mint-border);color:var(--mint);background:var(--mint-dim)}
+
+  /* WORKSPACE */
+  .workspace{padding:0 6% 80px;max-width:1280px;margin:0 auto;display:grid;grid-template-columns:1fr 400px;gap:28px;align-items:start}
+
+  /* LEFT COLUMN */
+  .left-col{display:flex;flex-direction:column;gap:24px}
+
+  /* PANEL */
+  .panel{background:var(--card);border:1px solid var(--border);border-radius:14px;overflow:hidden}
+  .panel-head{padding:13px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+  .panel-title{font-size:.64rem;letter-spacing:.16em;text-transform:uppercase;color:var(--gray)}
+  .panel-body{padding:20px}
+
+  /* FORM */
+  .form-intro{font-size:.82rem;color:var(--gray-light);line-height:1.7;margin-bottom:20px}
+  .form-section{margin-bottom:22px}
+  .form-section-title{font-size:.68rem;letter-spacing:.12em;text-transform:uppercase;color:var(--gray);margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--border)}
+
+  .check-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  .check-item{display:flex;align-items:center;gap:10px;padding:10px 12px;border:1px solid var(--border);border-radius:10px;cursor:pointer;transition:all .18s;user-select:none}
+  .check-item:hover{border-color:var(--border-hi);background:rgba(255,255,255,.02)}
+  .check-item.checked{border-color:var(--mint-border);background:var(--mint-dim)}
+  .check-box{width:18px;height:18px;border:1.5px solid var(--border-hi);border-radius:5px;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all .18s}
+  .check-item.checked .check-box{background:var(--mint);border-color:var(--mint)}
+  .check-box svg{display:none;width:11px;height:11px}
+  .check-item.checked .check-box svg{display:block}
+  .check-label{font-size:.8rem;color:var(--gray-light);transition:color .18s;line-height:1.3}
+  .check-item.checked .check-label{color:var(--white)}
+  .check-id{font-family:'JetBrains Mono',monospace;font-size:.58rem;color:var(--gray);display:block;margin-top:1px}
+
+  /* SUBMIT */
+  .submit-row{display:flex;align-items:center;gap:12px;padding-top:4px}
+  .submit-btn{display:inline-flex;align-items:center;gap:8px;padding:.75rem 1.6rem;background:var(--mint-dim);border:1px solid var(--mint-border);border-radius:100px;color:var(--mint);font-size:.82rem;cursor:pointer;transition:all .2s;font-family:'DM Sans',sans-serif}
+  .submit-btn:hover{background:rgba(184,221,214,.14)}
+  .submit-btn:active{transform:scale(.97)}
+  .simulate-btn{display:inline-flex;align-items:center;gap:8px;padding:.75rem 1.4rem;background:transparent;border:1px solid var(--border-hi);border-radius:100px;color:var(--gray-light);font-size:.82rem;cursor:pointer;transition:all .2s;font-family:'DM Sans',sans-serif}
+  .simulate-btn:hover{border-color:var(--border-hi);color:var(--white)}
+  .sub-count-hint{font-size:.72rem;color:var(--gray);margin-left:auto}
+
+  /* SUBMISSION LOG */
+  .log-wrap{max-height:200px;overflow-y:auto}
+  .log-wrap::-webkit-scrollbar{width:3px}
+  .log-wrap::-webkit-scrollbar-thumb{background:var(--border-hi);border-radius:2px}
+  .log-row{display:flex;align-items:flex-start;gap:10px;padding:9px 20px;border-bottom:1px solid rgba(255,255,255,.04);font-family:'JetBrains Mono',monospace;font-size:.63rem;animation:rowIn .25s ease forwards;opacity:0}
+  @keyframes rowIn{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:translateY(0)}}
+  .log-row:last-child{border-bottom:none}
+  .log-id{color:var(--gray);flex-shrink:0;width:68px}
+  .log-pills{display:flex;flex-wrap:wrap;gap:4px;flex:1}
+  .log-pill{padding:2px 7px;border-radius:4px;font-size:.58rem;font-weight:500;background:var(--mint-dim);color:var(--mint);border:1px solid var(--mint-border)}
+  .log-none{color:var(--gray);font-style:italic}
+
+  /* RIGHT COLUMN */
+  .right-col{position:sticky;top:80px;display:flex;flex-direction:column;gap:20px}
+
+  /* RESULTS */
+  .result-row{display:flex;align-items:center;gap:10px;margin-bottom:11px}
+  .result-row:last-child{margin-bottom:0}
+  .result-label{font-size:.72rem;color:var(--gray-light);flex-shrink:0;width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .result-track{flex:1;height:6px;background:rgba(255,255,255,.06);border-radius:3px;overflow:hidden}
+  .result-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--mint),rgba(184,221,214,.4));transition:width .5s cubic-bezier(.4,0,.2,1)}
+  .result-pct{font-family:'JetBrains Mono',monospace;font-size:.7rem;color:var(--mint);width:36px;text-align:right;flex-shrink:0}
+
+  /* CODE */
+  .code-window{background:var(--code-bg);border-radius:10px;overflow:hidden}
+  .code-bar{padding:9px 14px;border-bottom:1px solid rgba(255,255,255,.05);display:flex;align-items:center;gap:7px}
+  .dot{width:9px;height:9px;border-radius:50%}
+  .dot-r{background:#ff5f57}.dot-y{background:#febc2e}.dot-g{background:#28c840}
+  .code-filename{font-family:'JetBrains Mono',monospace;font-size:.58rem;color:var(--gray);letter-spacing:.06em;margin-left:6px}
+  pre{padding:16px 18px;font-family:'JetBrains Mono',monospace;font-size:.65rem;line-height:1.85;overflow-x:auto;color:#cdd9e5}
+  .c-kw{color:#ff7b72}.c-fn{color:#d2a8ff}.c-var{color:#cdd9e5}
+  .c-str{color:#a5d6ff}.c-num{color:#79c0ff}.c-op{color:#ff7b72}.c-type{color:#ffa657}
+  .ln{display:block;padding:0 3px;margin:0 -3px;border-radius:3px;transition:background .12s}
+  .ln.on{background:rgba(184,221,214,.09)}
+
+  /* LIVE badge */
+  .live-badge{display:flex;align-items:center;gap:5px;font-size:.6rem;letter-spacing:.1em;text-transform:uppercase;color:var(--green)}
+  .live-dot{width:5px;height:5px;border-radius:50%;background:var(--green);animation:pulse 1.4s ease-in-out infinite}
+  @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.3;transform:scale(.6)}}
+
+  /* JSON flash */
+  .j-k{color:#a5d6ff}.j-v{color:var(--mint);transition:color .3s}.j-b{color:var(--gray)}
+  .j-flash{color:var(--amber)!important}
+
+  @media(max-width:960px){
+    .workspace{grid-template-columns:1fr}
+    .right-col{position:static}
+    .check-grid{grid-template-columns:1fr}
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="https://seantyndale.com" class="nav-logo">sean<span>.</span>tyndale</a>
+  <a href="https://seantyndale.com" class="nav-back">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+    Back to projects
+  </a>
+</nav>
+
+<div class="hero">
+  <div class="eyebrow"><div class="eyebrow-dot"></div><span class="eyebrow-text">Open Source · Just Train · 2023–2024</span></div>
+  <h1>form.io <em>Data Analysis</em></h1>
+  <p class="hero-desc">Fill out the form below as a user would — check any combination of boxes, then submit. Hit <strong style="color:var(--white)">Simulate users</strong> to add random responses. The analytics panel updates live showing what percentage of all submissions checked each field.</p>
+  <div>
+    <span class="tag mint">TypeScript</span>
+    <span class="tag">Node.js</span>
+    <span class="tag">Jest</span>
+    <span class="tag">npm</span>
+    <span class="tag">form.io JS SDK</span>
+  </div>
+</div>
+
+<div class="workspace">
+
+  <!-- LEFT -->
+  <div class="left-col">
+
+    <!-- THE FORM -->
+    <div class="panel">
+      <div class="panel-head">
+        <span class="panel-title">formioResult — User Form</span>
+        <span class="live-badge"><span class="live-dot"></span>Interactive</span>
+      </div>
+      <div class="panel-body">
+        <p class="form-intro">Check all that apply to you, then submit. Your response joins the pool and the distribution updates instantly.</p>
+
+        <div class="form-section">
+          <div class="form-section-title">How are you feeling?</div>
+          <div class="check-grid">
+            <div class="check-item" data-id="satisfied" onclick="toggle(this)">
+              <div class="check-box"><svg viewBox="0 0 12 12" fill="none" stroke="#0a0a0a" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="1.5,6 4.5,9 10.5,3"/></svg></div>
+              <div><span class="check-label">Satisfied</span><span class="check-id">satisfied</span></div>
+            </div>
+            <div class="check-item" data-id="happy" onclick="toggle(this)">
+              <div class="check-box"><svg viewBox="0 0 12 12" fill="none" stroke="#0a0a0a" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="1.5,6 4.5,9 10.5,3"/></svg></div>
+              <div><span class="check-label">Happy</span><span class="check-id">happy</span></div>
+            </div>
+            <div class="check-item" data-id="unhappy" onclick="toggle(this)">
+              <div class="check-box"><svg viewBox="0 0 12 12" fill="none" stroke="#0a0a0a" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="1.5,6 4.5,9 10.5,3"/></svg></div>
+              <div><span class="check-label">Unhappy</span><span class="check-id">unhappy</span></div>
+            </div>
+            <div class="check-item" data-id="sad" onclick="toggle(this)">
+              <div class="check-box"><svg viewBox="0 0 12 12" fill="none" stroke="#0a0a0a" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="1.5,6 4.5,9 10.5,3"/></svg></div>
+              <div><span class="check-label">Sad</span><span class="check-id">sad</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-section">
+          <div class="form-section-title">Demographics</div>
+          <div class="check-grid">
+            <div class="check-item" data-id="under18" onclick="toggle(this)">
+              <div class="check-box"><svg viewBox="0 0 12 12" fill="none" stroke="#0a0a0a" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="1.5,6 4.5,9 10.5,3"/></svg></div>
+              <div><span class="check-label">Under 18</span><span class="check-id">under18</span></div>
+            </div>
+            <div class="check-item" data-id="under30" onclick="toggle(this)">
+              <div class="check-box"><svg viewBox="0 0 12 12" fill="none" stroke="#0a0a0a" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="1.5,6 4.5,9 10.5,3"/></svg></div>
+              <div><span class="check-label">Under 30</span><span class="check-id">under30</span></div>
+            </div>
+            <div class="check-item" data-id="over50" onclick="toggle(this)">
+              <div class="check-box"><svg viewBox="0 0 12 12" fill="none" stroke="#0a0a0a" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="1.5,6 4.5,9 10.5,3"/></svg></div>
+              <div><span class="check-label">Over 50</span><span class="check-id">over50</span></div>
+            </div>
+            <div class="check-item" data-id="male" onclick="toggle(this)">
+              <div class="check-box"><svg viewBox="0 0 12 12" fill="none" stroke="#0a0a0a" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="1.5,6 4.5,9 10.5,3"/></svg></div>
+              <div><span class="check-label">Male</span><span class="check-id">male</span></div>
+            </div>
+            <div class="check-item" data-id="female" onclick="toggle(this)">
+              <div class="check-box"><svg viewBox="0 0 12 12" fill="none" stroke="#0a0a0a" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="1.5,6 4.5,9 10.5,3"/></svg></div>
+              <div><span class="check-label">Female</span><span class="check-id">female</span></div>
+            </div>
+            <div class="check-item" data-id="married" onclick="toggle(this)">
+              <div class="check-box"><svg viewBox="0 0 12 12" fill="none" stroke="#0a0a0a" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="1.5,6 4.5,9 10.5,3"/></svg></div>
+              <div><span class="check-label">Married</span><span class="check-id">married</span></div>
+            </div>
+            <div class="check-item" data-id="single" onclick="toggle(this)">
+              <div class="check-box"><svg viewBox="0 0 12 12" fill="none" stroke="#0a0a0a" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="1.5,6 4.5,9 10.5,3"/></svg></div>
+              <div><span class="check-label">Single</span><span class="check-id">single</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-section">
+          <div class="form-section-title">Health</div>
+          <div class="check-grid">
+            <div class="check-item" data-id="haveEpilepsy" onclick="toggle(this)">
+              <div class="check-box"><svg viewBox="0 0 12 12" fill="none" stroke="#0a0a0a" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="1.5,6 4.5,9 10.5,3"/></svg></div>
+              <div><span class="check-label">Have Epilepsy</span><span class="check-id">haveEpilepsy</span></div>
+            </div>
+            <div class="check-item" data-id="underlyingHealthConditions" onclick="toggle(this)">
+              <div class="check-box"><svg viewBox="0 0 12 12" fill="none" stroke="#0a0a0a" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="1.5,6 4.5,9 10.5,3"/></svg></div>
+              <div><span class="check-label">Underlying Health Conditions</span><span class="check-id">underlyingHealthConditions</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="submit-row">
+          <button class="submit-btn" onclick="submitForm()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            Submit my response
+          </button>
+          <button class="simulate-btn" onclick="simulateUsers(10)">
+            + Simulate 10 users
+          </button>
+          <span class="sub-count-hint" id="subCountHint">0 submissions</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- SUBMISSION LOG -->
+    <div class="panel">
+      <div class="panel-head">
+        <span class="panel-title">Submission log</span>
+        <span id="logCount" style="font-family:'JetBrains Mono',monospace;font-size:.62rem;color:var(--gray)">0 entries</span>
+      </div>
+      <div class="log-wrap" id="logWrap">
+        <div style="padding:20px;font-size:.78rem;color:var(--gray);text-align:center">No submissions yet — fill out the form above</div>
+      </div>
+    </div>
+
+    <!-- CODE -->
+    <div class="panel">
+      <div class="panel-head"><span class="panel-title">Source · distribution.ts</span></div>
+      <div style="padding:16px">
+        <div class="code-window">
+          <div class="code-bar">
+            <div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div>
+            <span class="code-filename">src/checkbox/distribution.ts</span>
+          </div>
+<pre
+><span class="c-kw">export const</span> <span class="c-fn">distribution</span> = <span class="c-kw">function</span>(
+  <span class="c-var">formioSubmissions</span>: <span class="c-type">any</span>,
+  <span class="c-var">checkBoxId</span>: <span class="c-type">string</span>
+) {
+<span class="ln" id="l-init">  <span class="c-kw">var</span> <span class="c-var">trueCount</span>  = <span class="c-num">0</span>;
+  <span class="c-kw">var</span> <span class="c-var">falseCount</span> = <span class="c-num">0</span>;</span>
+<span class="ln" id="l-outer">  <span class="c-kw">for</span> (<span class="c-kw">var</span> <span class="c-var">key</span> <span class="c-kw">in</span> <span class="c-var">formioSubmissions</span>) {</span>
+<span class="ln" id="l-inner">    <span class="c-kw">for</span> (<span class="c-kw">var</span> <span class="c-var">sub_key</span> <span class="c-kw">in</span>
+      <span class="c-var">formioSubmissions</span>[<span class="c-var">key</span>].<span class="c-var">data</span>) {</span>
+<span class="ln" id="l-true">      <span class="c-kw">if</span> (<span class="c-var">formioSubmissions</span>[<span class="c-var">key</span>]
+        .<span class="c-var">data</span>[<span class="c-var">sub_key</span>] <span class="c-op">===</span> <span class="c-kw">true</span>
+        <span class="c-op">&amp;&amp;</span> <span class="c-var">sub_key</span> <span class="c-op">===</span> <span class="c-var">checkBoxId</span>)
+          <span class="c-var">trueCount</span><span class="c-op">++</span>;</span>
+<span class="ln" id="l-false">      <span class="c-kw">if</span> (<span class="c-var">formioSubmissions</span>[<span class="c-var">key</span>]
+        .<span class="c-var">data</span>[<span class="c-var">sub_key</span>] <span class="c-op">===</span> <span class="c-kw">false</span>
+        <span class="c-op">&amp;&amp;</span> <span class="c-var">sub_key</span> <span class="c-op">===</span> <span class="c-var">checkBoxId</span>)
+          <span class="c-var">falseCount</span><span class="c-op">++</span>;</span>
+    }
+  }
+<span class="ln" id="l-return">  <span class="c-kw">return</span> {
+    <span class="c-str">percentageOfTrue</span>:
+      (<span class="c-var">trueCount</span> <span class="c-op">*</span> <span class="c-num">100</span>) <span class="c-op">/</span>
+      (<span class="c-var">trueCount</span> <span class="c-op">+</span> <span class="c-var">falseCount</span>),
+    <span class="c-str">percentageOfFalse</span>:
+      (<span class="c-var">falseCount</span> <span class="c-op">*</span> <span class="c-num">100</span>) <span class="c-op">/</span>
+      (<span class="c-var">trueCount</span> <span class="c-op">+</span> <span class="c-var">falseCount</span>)
+  }</span>
+}</pre>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /left-col -->
+
+  <!-- RIGHT -->
+  <div class="right-col">
+
+    <div class="panel">
+      <div class="panel-head">
+        <span class="panel-title">Live distribution</span>
+        <span class="live-badge"><span class="live-dot"></span>Live</span>
+      </div>
+      <div class="panel-body" id="resultsBody">
+        <div style="color:var(--gray);font-size:.8rem;text-align:center;padding:16px 0">Submit a response to see percentages</div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-head"><span class="panel-title">JSON output</span><span id="callBadge" style="font-family:'JetBrains Mono',monospace;font-size:.61rem;color:var(--gray)">calls: 0</span></div>
+      <div style="padding:14px 16px;background:var(--code-bg);border-radius:0 0 14px 14px;font-family:'JetBrains Mono',monospace;font-size:.62rem;line-height:1.9;max-height:280px;overflow-y:auto" id="jsonOut">
+        <span class="j-b">{}</span>
+      </div>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:8px">
+      <a href="https://github.com/seansqlifting29/formio-stats" target="_blank" style="display:flex;align-items:center;gap:8px;padding:.7rem 1.2rem;background:var(--mint-dim);border:1px solid var(--mint-border);border-radius:10px;color:var(--mint);text-decoration:none;font-size:.78rem;transition:all .2s" onmouseover="this.style.background='rgba(184,221,214,.14)'" onmouseout="this.style.background='var(--mint-dim)'">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.477 2 12c0 4.418 2.865 8.166 6.839 9.489.5.092.682-.217.682-.482 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.34-3.369-1.34-.454-1.154-1.11-1.462-1.11-1.462-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025A9.578 9.578 0 0112 6.836a9.59 9.59 0 012.504.337c1.909-1.294 2.747-1.025 2.747-1.025.546 1.377.202 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.741 0 .267.18.579.688.481C19.138 20.163 22 16.418 22 12c0-5.523-4.477-10-10-10z"/></svg>
+        formio-stats on GitHub
+      </a>
+      <div style="display:flex;gap:8px">
+        <a href="https://github.com/seansqlifting29/formioResultsStatistics" target="_blank" style="flex:1;display:flex;align-items:center;justify-content:center;gap:6px;padding:.6rem;border:1px solid var(--border-hi);border-radius:10px;color:var(--gray-light);text-decoration:none;font-size:.72rem;transition:all .2s" onmouseover="this.style.borderColor='var(--mint-border)';this.style.color='var(--mint)'" onmouseout="this.style.borderColor='var(--border-hi)';this.style.color='var(--gray-light)'">R&amp;D Repo</a>
+        <a href="https://github.com/seansqlifting29/formioResultsStatisticsNpm" target="_blank" style="flex:1;display:flex;align-items:center;justify-content:center;gap:6px;padding:.6rem;border:1px solid var(--border-hi);border-radius:10px;color:var(--gray-light);text-decoration:none;font-size:.72rem;transition:all .2s" onmouseover="this.style.borderColor='var(--mint-border)';this.style.color='var(--mint)'" onmouseout="this.style.borderColor='var(--border-hi)';this.style.color='var(--gray-light)'">npm Repo</a>
+      </div>
+    </div>
+
+  </div><!-- /right-col -->
+</div>
+
+<script>
+// ── The actual distribution function ──
+function distribution(formioSubmissions, checkBoxId) {
+  var trueCount = 0, falseCount = 0;
+  for (var key in formioSubmissions) {
+    for (var sub_key in formioSubmissions[key].data) {
+      if (formioSubmissions[key].data[sub_key] === true  && sub_key === checkBoxId) trueCount++;
+      if (formioSubmissions[key].data[sub_key] === false && sub_key === checkBoxId) falseCount++;
+    }
+  }
+  return {
+    percentageOfTrue:  (trueCount  * 100) / (trueCount + falseCount),
+    percentageOfFalse: (falseCount * 100) / (trueCount + falseCount)
+  };
+}
+
+// ── All field IDs ──
+const ALL_FIELDS = [
+  'satisfied','happy','unhappy','sad',
+  'under18','under30','over50','male','female','married','single',
+  'haveEpilepsy','underlyingHealthConditions'
+];
+
+// field display names for results
+const FIELD_LABELS = {
+  satisfied:'Satisfied', happy:'Happy', unhappy:'Unhappy', sad:'Sad',
+  under18:'Under 18', under30:'Under 30', over50:'Over 50',
+  male:'Male', female:'Female', married:'Married', single:'Single',
+  haveEpilepsy:'Have Epilepsy', underlyingHealthConditions:'Underlying Health'
+};
+
+// realistic simulation probabilities
+const PROBS = {
+  satisfied:.68, happy:.55, unhappy:.22, sad:.12,
+  under18:.11, under30:.38, over50:.19,
+  male:.51, female:.47, married:.40, single:.54,
+  haveEpilepsy:.04, underlyingHealthConditions:.13
+};
+
+let submissions = {};
+let subIndex = 0;
+let callCount = 0;
+let prevPcts = {};
+
+// ── Toggle checkbox ──
+function toggle(el) {
+  el.classList.toggle('checked');
+}
+
+// ── Build data object from current form state ──
+function getFormData() {
+  const data = {};
+  ALL_FIELDS.forEach(id => {
+    const el = document.querySelector(`.check-item[data-id="${id}"]`);
+    data[id] = el ? el.classList.contains('checked') : false;
+  });
+  data.textArea = ''; data.submit = false;
+  return data;
+}
+
+// ── Clear form ──
+function clearForm() {
+  document.querySelectorAll('.check-item.checked').forEach(el => el.classList.remove('checked'));
+}
+
+// ── Add a submission ──
+function addSubmission(data, isUser) {
+  const id = `sub_${String(subIndex).padStart(3,'0')}`;
+  submissions[id] = { data, metadata: {} };
+  subIndex++;
+  appendLogRow(id, data, isUser);
+  return id;
+}
+
+// ── Append log row ──
+function appendLogRow(id, data, isUser) {
+  const wrap = document.getElementById('logWrap');
+
+  // clear placeholder
+  if (wrap.querySelector('div[style]')) wrap.innerHTML = '';
+
+  const trueCols = ALL_FIELDS.filter(f => data[f]);
+  const tr = document.createElement('div');
+  tr.className = 'log-row';
+  tr.style.background = isUser ? 'rgba(184,221,214,.04)' : 'transparent';
+
+  const pills = trueCols.length
+    ? trueCols.map(f => `<span class="log-pill">${FIELD_LABELS[f]}</span>`).join('')
+    : `<span class="log-none">no fields checked</span>`;
+
+  tr.innerHTML = `
+    <span class="log-id">${id}${isUser ? ' <span style="color:var(--mint)">✦</span>' : ''}</span>
+    <div class="log-pills">${pills}</div>
+  `;
+
+  // prepend so newest is at top
+  wrap.insertBefore(tr, wrap.firstChild);
+  document.getElementById('logCount').textContent = `${subIndex} ${subIndex === 1 ? 'entry' : 'entries'}`;
+}
+
+// ── Code line highlight ──
+let hlT;
+function highlightCode() {
+  const lines = ['l-init','l-outer','l-inner','l-true','l-false','l-return'];
+  lines.forEach(id => document.getElementById(id)?.classList.remove('on'));
+  lines.forEach((id, i) => setTimeout(() => document.getElementById(id)?.classList.add('on'), i * 65));
+  clearTimeout(hlT);
+  hlT = setTimeout(() => {
+    lines.forEach(id => document.getElementById(id)?.classList.remove('on'));
+    document.getElementById('l-return')?.classList.add('on');
+  }, lines.length * 65 + 400);
+}
+
+// ── Animate number ──
+function animNum(el, from, to) {
+  if (!el) return;
+  const dur = 500, start = performance.now();
+  function step(now) {
+    const t = Math.min((now - start) / dur, 1);
+    const e = 1 - Math.pow(1 - t, 3);
+    el.textContent = (from + (to - from) * e).toFixed(1) + '%';
+    if (t < 1) requestAnimationFrame(step);
+  }
+  requestAnimationFrame(step);
+}
+
+// ── Run distribution across all fields + update UI ──
+function runDistribution() {
+  if (subIndex === 0) return;
+
+  callCount += ALL_FIELDS.length;
+  document.getElementById('callBadge').textContent = `calls: ${callCount}`;
+  highlightCode();
+
+  // Build results HTML
+  let resultsHTML = '';
+  let jsonLines = [];
+
+  ALL_FIELDS.forEach(id => {
+    const r = distribution(submissions, id);
+    const prev = prevPcts[id] || 0;
+    prevPcts[id] = r.percentageOfTrue;
+
+    resultsHTML += `
+      <div class="result-row">
+        <span class="result-label">${FIELD_LABELS[id]}</span>
+        <div class="result-track"><div class="result-fill" id="bar_${id}" style="width:${prev}%"></div></div>
+        <span class="result-pct" id="pct_${id}">${prev.toFixed(1)}%</span>
+      </div>`;
+
+    jsonLines.push(`  <span class="j-k">"${id}"</span>: <span class="j-v" id="jv_${id}">${r.percentageOfTrue.toFixed(2)}</span>`);
+  });
+
+  document.getElementById('resultsBody').innerHTML = resultsHTML;
+
+  // Build JSON
+  document.getElementById('jsonOut').innerHTML =
+    `<span class="j-b">{</span>\n` +
+    jsonLines.join(',\n') +
+    `\n<span class="j-b">}</span>`;
+
+  // Animate bars + numbers after DOM update
+  requestAnimationFrame(() => {
+    ALL_FIELDS.forEach(id => {
+      const r = distribution(submissions, id);
+      const bar = document.getElementById(`bar_${id}`);
+      const pct = document.getElementById(`pct_${id}`);
+      const jv  = document.getElementById(`jv_${id}`);
+      const prev = prevPcts[id] || 0;
+
+      if (bar) bar.style.width = r.percentageOfTrue + '%';
+      animNum(pct, prev, r.percentageOfTrue);
+
+      if (jv) {
+        jv.textContent = r.percentageOfTrue.toFixed(2);
+        jv.classList.add('j-flash');
+        setTimeout(() => jv.classList.remove('j-flash'), 500);
+      }
+    });
+    // update prevPcts after animation
+    ALL_FIELDS.forEach(id => { prevPcts[id] = distribution(submissions, id).percentageOfTrue; });
+  });
+
+  document.getElementById('subCountHint').textContent = `${subIndex} submission${subIndex !== 1 ? 's' : ''}`;
+}
+
+// ── Submit form ──
+function submitForm() {
+  const data = getFormData();
+  addSubmission(data, true);
+  clearForm();
+  runDistribution();
+}
+
+// ── Simulate N random users ──
+let simTimer = null;
+function simulateUsers(n) {
+  let added = 0;
+  clearInterval(simTimer);
+  simTimer = setInterval(() => {
+    if (added >= n) { clearInterval(simTimer); return; }
+    const data = {};
+    ALL_FIELDS.forEach(f => { data[f] = Math.random() < PROBS[f]; });
+    data.textArea = ''; data.submit = false;
+    addSubmission(data, false);
+    runDistribution();
+    added++;
+  }, 120);
+}
+
+// ── Keyboard submit ──
+document.addEventListener('keydown', e => {
+  if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') submitForm();
+});
+</script>
+</body>
+</html>
