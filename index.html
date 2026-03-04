@@ -532,42 +532,22 @@
 
 <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script>
 <script>
-    function activateTab(tabId) {
-        const btn = document.querySelector(`[data-tab="${tabId}"]`);
-        if (!btn) return;
-        const group = btn.closest('[id]');
-        const section = btn.closest('section');
-        group.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        section.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
-        const panel = document.getElementById(tabId);
-        if (panel) panel.classList.add('active');
-    }
-
     function initTabs(groupId) {
         const group = document.getElementById(groupId);
         if (!group) return;
         group.querySelectorAll('.tab-btn').forEach(btn => {
             btn.addEventListener('click', () => {
-                activateTab(btn.dataset.tab);
-                history.replaceState(null, '', '#' + btn.dataset.tab);
+                group.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                const target = btn.dataset.tab;
+                const section = btn.closest('section');
+                section.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+                const panel = document.getElementById(target);
+                if (panel) panel.classList.add('active');
             });
         });
     }
     initTabs('skills-tabs');
-
-    // On load: activate tab from URL hash and scroll to skills section
-    (function() {
-        const hash = window.location.hash.replace('#', '');
-        const validTabs = ['skills-webdev', 'skills-frontend', 'skills-backend'];
-        if (validTabs.includes(hash)) {
-            activateTab(hash);
-            setTimeout(() => {
-                const el = document.getElementById('skills');
-                if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            }, 80);
-        }
-    })();
 </script>
 </body>
 </html>
