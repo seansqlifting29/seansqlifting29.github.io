@@ -18,11 +18,22 @@
     var k = GENRES.indexOf(x.genre) % 3;
     var one = { Hooks: "Hook", Shorts: "Short", Longform: "Longform" }[x.format] || x.format;
     var hasStats = x.type === "Published" && x.showStats !== false && x.views;
-    var big = hasStats ? short(x.views) : one;
-    var sm = hasStats ? "views" : "";
-    return '<a class="card" href="' + x.link + '" target="_blank" rel="noopener"><div class="thumb' + (x.thumb ? ' has-img' : '') + ' t' + k + '">' +
-      (x.thumb ? '<img alt="" src="' + x.thumb + '">' : '') + '<span class="big">' + esc(big) + '</span>' + (sm ? '<span class="sm">' + sm + '</span>' : '') + "</div>" +
+    var th = thumbFor(x);
+    var big = hasStats ? short(x.views) + (th ? " views" : "") : one;
+    var sm = hasStats && !th ? "views" : "";
+    return '<a class="card" href="' + x.link + '" target="_blank" rel="noopener"><div class="thumb' + (th ? ' has-img' : '') + (th && th.vert ? ' vert' : '') + ' t' + k + '">' +
+      (th ? '<img alt="" loading="lazy" referrerpolicy="no-referrer" src="' + th.src + '" onerror="this.parentNode.classList.remove(\'has-img\');this.remove()">' : '') + '<span class="big">' + esc(big) + '</span>' + (sm ? '<span class="sm">' + sm + '</span>' : '') + "</div>" +
       '<div class="card-body"><h3>' + esc(x.title) + '</h3><div class="client">' + esc(x.client) + "</div></div></a>";
+  }
+
+  // thumbnails come from the video link itself, so new rows in data.js get one automatically
+  function thumbFor(x) {
+    if (x.thumb) return { src: x.thumb };
+    var m = /[?&]v=([\w-]{11})/.exec(x.link || "");
+    if (m) return { src: "https://i.ytimg.com/vi/" + m[1] + "/hqdefault.jpg", vert: x.ratio === "9 / 16" };
+    m = /drive\.google\.com\/file\/d\/([\w-]+)/.exec(x.link || "");
+    if (m) return { src: "https://drive.google.com/thumbnail?id=" + m[1] + "&sz=w800" };
+    return null;
   }
 
   function countOf(f) { return LIB.filter(function (x) { return x.format === f; }).length; }
