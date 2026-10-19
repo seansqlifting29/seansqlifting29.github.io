@@ -810,3 +810,20 @@ a.card:hover h3 { text-decoration: underline; text-underline-offset: 3px; }
 .about-body .portrait { border-color: var(--teal); }
 /* clean matte: no blotchy paper layer at any size */
 .banner-paper { display: none !important; }
+/* about portrait: full-width photo on phones and tablets, circle on desktop */
+@media (max-width: 899px) {
+  .about-grid { gap: 0; grid-template-columns: 1fr; }
+  .about-body { padding-top: 24px; }
+  .about-body .portrait { width: 100vw; max-width: none; height: auto; aspect-ratio: 1 / 1; margin-inline: calc(50% - 50vw); border-radius: 0; padding: 0; background: none; object-fit: cover; object-position: 50% 18%; clip-path: polygon(0 28px, 100% 0, 100% 100%, 0 100%); margin-bottom: 28px; }
+}
+@media (min-width: 600px) and (max-width: 899px) { .about-body .portrait { aspect-ratio: 16 / 11; object-position: 50% 20%; } }
+/* video rows: swipe on touch screens, arrows on desktop only */
+@media (max-width: 899px) {
+  .carousel .car-head { display: none; }
+  .car-track { margin-inline: calc(50% - 50vw); padding-inline: max(16px, env(safe-area-inset-left, 0px)); scroll-padding-inline: max(16px, env(safe-area-inset-left, 0px)); -webkit-overflow-scrolling: touch; overscroll-behavior-x: contain; margin-top: 0; }
+  .car-track > .card:first-child { margin-left: 0; }
+  .car-track > .card:last-child { margin-right: 0; }
+  .car-track .card { flex-basis: min(78vw, 320px); }
+  .car-track::after { content: ""; flex: 0 0 1px; }
+}
+@media (min-width: 600px) and (max-width: 899px) { .about-body .portrait { aspect-ratio: 2 / 1; object-position: 50% 28%; } }
