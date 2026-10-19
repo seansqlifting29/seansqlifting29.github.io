@@ -191,3 +191,42 @@ document.addEventListener("click", function (e) {
       .then(function () { btn.disabled = false; });
   });
 })();
+
+// banner: one short animation. Painting first, then the black paper, the line, "Creativity meets engineering", and "builds retention over time" all finish together.
+(function () {
+  var b = document.querySelector(".banner.has-curve");
+  var path = document.getElementById("hook-path"), dot = document.getElementById("hook-dot");
+  if (!b || !path || !dot) return;
+  var T = 3800;
+  var still = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var total = path.getTotalLength(), started = false;
+  function ease(t) { return 0.5 - 0.5 * Math.cos(Math.PI * t); }
+  function sstep(a, z, x) { var t = Math.max(0, Math.min(1, (x - a) / (z - a))); return t * t * (3 - 2 * t); }
+  function yAt(x) {
+    var lo = 0, hi = total;
+    for (var i = 0; i < 22; i++) { var mid = (lo + hi) / 2; if (path.getPointAtLength(mid).x < x) lo = mid; else hi = mid; }
+    return path.getPointAtLength(hi);
+  }
+  function draw(p) {
+    var pt = yAt(p * 98);
+    b.style.setProperty("--p", p.toFixed(4));
+        dot.style.left = pt.x + "%"; dot.style.top = pt.y + "%";
+    b.style.setProperty("--tb", sstep(0.02, 0.62, p).toFixed(3));
+    b.style.setProperty("--ts", sstep(0.62, 1, p).toFixed(3));
+  }
+  function run() {
+    if (started) return; started = true;
+    var t0 = performance.now();
+    (function frame(now) {
+      var t = Math.min(1, (now - t0) / T);
+      draw(ease(t));
+      if (t < 1) requestAnimationFrame(frame);
+    })(t0);
+  }
+  if (still) { started = true; draw(1); return; }
+  draw(0);
+  if ("IntersectionObserver" in window) {
+    var io = new IntersectionObserver(function (en) { if (en[0].isIntersecting) { io.disconnect(); run(); } }, { threshold: 0.6 });
+    io.observe(b);
+  } else run();
+})();
