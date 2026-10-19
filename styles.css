@@ -824,3 +824,8 @@ a.card:hover h3 { text-decoration: underline; text-underline-offset: 3px; }
 @media (min-width: 600px) and (max-width: 899px) { .about-body .portrait { aspect-ratio: 2 / 1; object-position: 50% 28%; } }
 /* clean matte: no blotchy paper layer at any size */
 .banner-paper { display: none !important; }
+/* about (desktop): intro and bio read as one cream section, no extra gap */
+@media (min-width: 900px) {
+  .page-head.joined { clip-path: none; padding-bottom: 8px; }
+  .band.about-body { clip-path: none; margin-top: 0; padding-block: 40px 96px; }
+}
