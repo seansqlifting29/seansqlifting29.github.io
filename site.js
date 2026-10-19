@@ -19,10 +19,10 @@
     var one = { Hooks: "Hook", Shorts: "Short", Longform: "Longform" }[x.format] || x.format;
     var hasStats = x.type === "Published" && x.showStats !== false && x.views;
     var th = thumbFor(x);
-    var big = hasStats ? short(x.views) + (th ? " views" : "") : one;
-    var sm = hasStats && !th ? "views" : "";
+    var big = esc(hasStats ? short(x.views) : one) + (hasStats ? '<span class="u"> views</span>' : "");
+    var sm = hasStats ? "views" : "";
     return '<a class="card" href="' + x.link + '" target="_blank" rel="noopener"><div class="thumb' + (th ? ' has-img' : '') + ' t' + k + '">' +
-      (th ? '<img alt="" loading="lazy" referrerpolicy="no-referrer" src="' + th[0] + '" data-n="0" data-srcs="' + th.join("|") + '" data-vert="' + (x.ratio === "9 / 16" ? 1 : 0) + '" onload="thumbOk(this)" onerror="thumbNext(this)">' : '') + '<span class="big">' + esc(big) + '</span>' + (sm ? '<span class="sm">' + sm + '</span>' : '') + "</div>" +
+      (th ? '<img alt="" loading="lazy" referrerpolicy="no-referrer" src="' + th[0] + '" data-n="0" data-srcs="' + th.join("|") + '" data-vert="' + (x.ratio === "9 / 16" ? 1 : 0) + '" onload="thumbOk(this)" onerror="thumbNext(this)">' : '') + '<span class="big">' + big + '</span>' + (sm ? '<span class="sm">' + sm + '</span>' : '') + "</div>" +
       '<div class="card-body"><h3>' + esc(x.title) + '</h3><div class="client">' + esc(x.client) + "</div></div></a>";
   }
 
@@ -43,7 +43,7 @@
   // a missing YouTube size sometimes comes back as a tiny grey placeholder instead of an error
   window.thumbOk = function (img) {
     if (img.naturalWidth && img.naturalWidth < 321 && img.dataset.srcs.split("|").length > Number(img.dataset.n) + 1) window.thumbNext(img);
-    else if (img.dataset.vert === "1" && img.naturalWidth > img.naturalHeight) img.parentNode.classList.add("pillar");
+    else if (img.dataset.vert === "1") img.parentNode.classList.add(img.naturalWidth > img.naturalHeight ? "pillar" : "tall");
   };
   window.thumbNext = function (img) {
     var l = img.dataset.srcs.split("|"), n = Number(img.dataset.n) + 1;

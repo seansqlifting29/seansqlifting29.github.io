@@ -356,3 +356,25 @@ a.card:hover h3 { text-decoration: underline; text-underline-offset: 3px; }
 
 @media (min-width: 1100px) { .art img { aspect-ratio: 5 / 4.4; } }
 @media (min-width: 1100px) and (max-width: 1499px) { .hero h1 { font-size: 4.4rem; } }
+
+/* shorts: keep the face in frame */
+.thumb.has-img.tall img { object-position: 50% 8%; }
+.thumb.has-img.pillar img { transform-origin: 50% 22%; object-position: 50% 22%; }
+
+/* results: centered, balanced blocks */
+.client-row { grid-template-columns: minmax(0, 1fr); justify-items: center; text-align: center; gap: 22px; }
+.client-row .bignums { grid-template-columns: repeat(2, auto); justify-content: center; gap: 20px clamp(32px, 9vw, 96px); text-align: center; }
+.client-row .bignums span { margin-inline: auto; }
+.client-row .quote, .client-row .why { grid-column: auto; margin-inline: auto; max-width: 46ch; text-align: center; }
+.client-row .more-btn { margin-inline: auto; }
+.carousel { margin-top: 44px; }
+.car-track { justify-content: flex-start; }
+.car-track > .card:first-child { margin-left: auto; }
+.car-track > .card:last-child { margin-right: auto; }
+.car-head { justify-content: center; gap: 20px; }
+@media (max-width: 560px) { .client-row .bignums { gap: 16px 28px; } .client-row .bignums b { font-size: clamp(2rem, 9vw, 2.6rem); } }
+
+.thumb:not(.has-img) .big .u { display: none; }
+.grid.two { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+@media (max-width: 599px) { .grid.two { grid-template-columns: 1fr; } }
+@media (min-width: 1100px) { .grid.two { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
