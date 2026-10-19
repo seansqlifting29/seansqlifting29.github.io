@@ -792,19 +792,22 @@ a.card:hover h3 { text-decoration: underline; text-underline-offset: 3px; }
 @media (max-width: 860px) { .band.reviews { padding-top: 88px; padding-bottom: 56px; } .reviews .rv-dots { margin-top: 32px; } }
 .band.band-frost.reviews { padding-block: 92px 64px; display: block; }
 @media (max-width: 860px) { .band.band-frost.reviews { padding-block: 88px 56px; } }
-/* banner on phones and tablets: bear covers the banner and fades smoothly into grid paper before the section ends; wipe runs top to bottom */
+/* banner: high-res bear, then the same frame with the grid gradient wipes in over it (images are pre-mirrored) */
+.banner-mat, .banner-paper, .banner-grid { display: none !important; }
+.banner img, .banner-wipe img { position: absolute; inset: 0; left: 0; width: 100%; height: 100%; max-width: none; object-fit: cover; object-position: 50% 50%; transform: none; filter: none; -webkit-mask-image: none; mask-image: none; display: block; }
+.banner-in .curve-box { top: 40%; bottom: 17%; }
+.banner-in .curve { stroke-width: 3.5; filter: drop-shadow(0 2px 6px rgba(13,12,17,.75)); }
+.banner .dot { width: 22px; height: 22px; margin: -11px 0 0 -11px; background: var(--orange); box-shadow: 0 0 0 5px rgba(13,12,17,.45), 0 0 22px 5px rgba(242,138,27,.6); }
+@media (min-width: 1700px) { .banner .dot { width: 28px; height: 28px; margin: -14px 0 0 -14px; } }
 @media (max-width: 899px) {
-  .banner { --k: 1.36; --ih: calc(100vw * .2625 * var(--k) * 1.2); --bh: calc(var(--ih) + 118px); height: var(--bh); }
-  .banner img { position: absolute; inset: 0 auto auto 0; width: calc(var(--k) * 100%); height: calc(var(--ih) + 66px); max-width: none; object-fit: cover; object-position: 40% 50%; transform: scaleX(-1); filter: saturate(.9) contrast(.98) brightness(.95); -webkit-mask-image: linear-gradient(180deg, #000 0, #000 56%, rgba(0,0,0,.62) 72%, rgba(0,0,0,.26) 86%, transparent 100%); mask-image: linear-gradient(180deg, #000 0, #000 56%, rgba(0,0,0,.62) 72%, rgba(0,0,0,.26) 86%, transparent 100%); }
-  .banner-mat { background: linear-gradient(180deg, rgba(13,12,17,0) 0, rgba(13,12,17,0) calc(var(--ih) * .6), rgba(13,12,17,.16) calc(var(--ih) * .8), rgba(13,12,17,.46) calc(var(--ih) + 14px), rgba(13,12,17,.82) calc(var(--ih) + 56px), var(--ink) calc(var(--ih) + 84px)); }
-  .banner-paper, .banner-grid { inset: 0; }
-  .banner-grid { opacity: 1; background-size: 24px 24px; background-position: 0 0; background-image: linear-gradient(rgba(244,239,230,.085) 1px, transparent 1px), linear-gradient(90deg, rgba(244,239,230,.085) 1px, transparent 1px); -webkit-mask-image: linear-gradient(180deg, transparent 0, transparent calc(var(--ih) * .7), rgba(0,0,0,.55) calc(var(--ih) + 10px), #000 calc(var(--ih) + 60px)); mask-image: linear-gradient(180deg, transparent 0, transparent calc(var(--ih) * .7), rgba(0,0,0,.55) calc(var(--ih) + 10px), #000 calc(var(--ih) + 60px)); }
+  .banner { height: clamp(250px, 64vw, 430px); }
+  .banner img, .banner-wipe img { object-position: 0% 50%; }
   .banner-wipe { --e: calc(var(--p, 0) * 142%); -webkit-mask-image: linear-gradient(180deg, #000 calc(var(--e) - 36%), rgba(0,0,0,.6) calc(var(--e) - 22%), rgba(0,0,0,.2) calc(var(--e) - 9%), transparent var(--e)); mask-image: linear-gradient(180deg, #000 calc(var(--e) - 36%), rgba(0,0,0,.6) calc(var(--e) - 22%), rgba(0,0,0,.2) calc(var(--e) - 9%), transparent var(--e)); }
   .t-big { left: 16px; right: auto; top: 40px; max-width: 78%; white-space: normal; font-size: clamp(1.4rem, 5.4vw, 2.6rem); }
-  .banner-in .curve-box { left: 16px; right: 16px; top: calc(var(--ih) * .62 + 26px); bottom: 82px; }
-  .t-small { right: 16px; bottom: 46px; font-size: clamp(.95rem, 3.4vw, 1.3rem); }
+  .banner-in .curve-box { left: 16px; right: 16px; top: 46%; bottom: 30%; }
+  .t-small { right: 16px; bottom: 40px; font-size: clamp(.95rem, 3.4vw, 1.3rem); }
+  .banner .dot { width: 18px; height: 18px; margin: -9px 0 0 -9px; box-shadow: 0 0 0 4px rgba(13,12,17,.45), 0 0 16px 4px rgba(242,138,27,.6); }
 }
-@media (min-width: 600px) and (max-width: 899px) { .banner { --k: 1.08; } }
 /* about portrait: full-width photo on phones and tablets, circle on desktop */
 @media (max-width: 899px) {
   .about-grid { gap: 0; grid-template-columns: 1fr; }
