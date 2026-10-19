@@ -230,3 +230,26 @@ document.addEventListener("click", function (e) {
     io.observe(b);
   } else run();
 })();
+
+// home: client quotes fade into each other
+(function () {
+  var box = document.getElementById("rv");
+  if (!box) return;
+  var items = box.querySelectorAll(".rv-item");
+  if (items.length < 2 || window.matchMedia("(prefers-reduced-motion: reduce)").matches) { box.classList.add("static"); return; }
+  var i = 0, timer = null, paused = false, dotBox = document.getElementById("rv-dots"), dots = [];
+  for (var d = 0; d < items.length; d++) (function (n) {
+    var b = document.createElement("button"); b.type = "button"; b.setAttribute("aria-label", "Quote " + (n + 1));
+    b.addEventListener("click", function () { if (n === i) return; box.classList.add("fast"); show(n); clearInterval(timer); timer = null; start(); setTimeout(function () { box.classList.remove("fast"); }, 400); });
+    dotBox.appendChild(b); dots.push(b);
+  })(d);
+  function show(n) { items[i].classList.remove("on"); dots[i].classList.remove("on"); i = n; items[i].classList.add("on"); dots[i].classList.add("on"); }
+  dots[0].classList.add("on");
+  function tick() { if (!paused) show((i + 1) % items.length); }
+  function start() { if (!timer) timer = setInterval(tick, 10000); }
+  box.addEventListener("mouseenter", function () { paused = true; });
+  box.addEventListener("mouseleave", function () { paused = false; });
+  if ("IntersectionObserver" in window) {
+    new IntersectionObserver(function (en) { if (en[0].isIntersecting) start(); else { clearInterval(timer); timer = null; } }, { threshold: 0.3 }).observe(box);
+  } else start();
+})();
