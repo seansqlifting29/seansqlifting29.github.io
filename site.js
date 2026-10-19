@@ -21,20 +21,35 @@
     var th = thumbFor(x);
     var big = hasStats ? short(x.views) + (th ? " views" : "") : one;
     var sm = hasStats && !th ? "views" : "";
-    return '<a class="card" href="' + x.link + '" target="_blank" rel="noopener"><div class="thumb' + (th ? ' has-img' : '') + (th && th.vert ? ' vert' : '') + ' t' + k + '">' +
-      (th ? '<img alt="" loading="lazy" referrerpolicy="no-referrer" src="' + th.src + '" onerror="this.parentNode.classList.remove(\'has-img\');this.remove()">' : '') + '<span class="big">' + esc(big) + '</span>' + (sm ? '<span class="sm">' + sm + '</span>' : '') + "</div>" +
+    return '<a class="card" href="' + x.link + '" target="_blank" rel="noopener"><div class="thumb' + (th ? ' has-img' : '') + ' t' + k + '">' +
+      (th ? '<img alt="" loading="lazy" referrerpolicy="no-referrer" src="' + th[0] + '" data-n="0" data-srcs="' + th.join("|") + '" data-vert="' + (x.ratio === "9 / 16" ? 1 : 0) + '" onload="thumbOk(this)" onerror="thumbNext(this)">' : '') + '<span class="big">' + esc(big) + '</span>' + (sm ? '<span class="sm">' + sm + '</span>' : '') + "</div>" +
       '<div class="card-body"><h3>' + esc(x.title) + '</h3><div class="client">' + esc(x.client) + "</div></div></a>";
   }
 
-  // thumbnails come from the video link itself, so new rows in data.js get one automatically
+  // sharpest thumbnail first, then softer ones. YouTube shorts try the vertical image before the pillarboxed one.
   function thumbFor(x) {
-    if (x.thumb) return { src: x.thumb };
+    if (x.thumb) return [x.thumb];
     var m = /[?&]v=([\w-]{11})/.exec(x.link || "");
-    if (m) return { src: "https://i.ytimg.com/vi/" + m[1] + "/hqdefault.jpg", vert: x.ratio === "9 / 16" };
+    if (m) {
+      var b = "https://i.ytimg.com/vi/" + m[1] + "/";
+      var list = [b + "maxresdefault.jpg", b + "hqdefault.jpg"];
+      if (x.ratio === "9 / 16") list.unshift(b + "oar2.jpg");
+      return list;
+    }
     m = /drive\.google\.com\/file\/d\/([\w-]+)/.exec(x.link || "");
-    if (m) return { src: "https://drive.google.com/thumbnail?id=" + m[1] + "&sz=w800" };
+    if (m) return ["https://drive.google.com/thumbnail?id=" + m[1] + "&sz=w1600"];
     return null;
   }
+  // a missing YouTube size sometimes comes back as a tiny grey placeholder instead of an error
+  window.thumbOk = function (img) {
+    if (img.naturalWidth && img.naturalWidth < 321 && img.dataset.srcs.split("|").length > Number(img.dataset.n) + 1) window.thumbNext(img);
+    else if (img.dataset.vert === "1" && img.naturalWidth > img.naturalHeight) img.parentNode.classList.add("pillar");
+  };
+  window.thumbNext = function (img) {
+    var l = img.dataset.srcs.split("|"), n = Number(img.dataset.n) + 1;
+    if (n >= l.length) { img.parentNode.classList.remove("has-img"); img.remove(); return; }
+    img.dataset.n = n; img.src = l[n];
+  };
 
   function countOf(f) { return LIB.filter(function (x) { return x.format === f; }).length; }
 
