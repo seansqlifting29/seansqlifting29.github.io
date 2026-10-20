@@ -832,3 +832,18 @@ a.card:hover h3 { text-decoration: underline; text-underline-offset: 3px; }
   .page-head.joined { clip-path: none; padding-bottom: 8px; }
   .band.about-body { clip-path: none; margin-top: 0; padding-block: 40px 96px; }
 }
+/* v85 colour swaps: hero badge, home CTA, card boxes, contact band */
+.hero .badge { background: var(--blue); color: var(--frost); }
+.band-blue { --card: var(--frost); --card-fg: var(--ink); --card-muted: rgba(13,12,17,.7); }
+.band-blue .car-track .card .thumb, .band-blue .thumb.t0, .band-blue .thumb.t1, .band-blue .thumb.t2 { background: var(--frost); color: var(--ink); }
+.band-blue .card .thumb .sm { color: rgba(13,12,17,.7); }
+.band-blue .card h3, .band-blue .card .client { color: var(--ink); }
+.band-blue .card .client { color: rgba(13,12,17,.7); }
+.band.res-peak { --card: var(--ink); --card-fg: var(--frost); --card-muted: rgba(244,239,230,.74); }
+.res-peak .car-track .card .thumb, .res-peak .thumb.t0, .res-peak .thumb.t1, .res-peak .thumb.t2 { background: var(--ink); color: var(--frost); }
+.res-peak .card h3 { color: var(--frost); }
+.res-peak .card .client { color: rgba(244,239,230,.74); }
+.cta-band.band-blue h2, .cta-band.band-blue .lede { color: var(--frost); }
+.cta-band.band-blue .btn-ghost { color: var(--frost); border-color: var(--frost); background: transparent; }
+.cta-band.band-blue .btn-ghost:hover { background: var(--frost); color: var(--ink); }
+.band-blue .thumb.has-img .big { color: var(--frost); }
