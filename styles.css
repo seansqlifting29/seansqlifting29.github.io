@@ -885,3 +885,27 @@ body::after { background-image: url("img/grain.png"); background-size: 160px 160
   background-repeat: no-repeat;
 }
 @media (min-width: 900px) { .band.about-body { background-image: none; background-color: var(--bg); } }
+/* v99: no full-screen fixed layer. The grain is painted inside each section (stopping short of the overlap with the next one so it never doubles up), so phone browsers have no fixed element at the screen edges to tint their bars from. */
+body::after { display: none; }
+.band, .band.last {
+  background-image: linear-gradient(to bottom right, transparent calc(50% - .5px), var(--bg) calc(50% + .5px)), linear-gradient(var(--bg), var(--bg));
+  background-size: 100% 33px, 100% calc(100% - 33px);
+  background-position: 0 0, 0 100%;
+  background-repeat: no-repeat;
+}
+@media (min-width: 900px) { .band.about-body { background-image: none; background-color: var(--bg); } }
+.band::before, .hero::before, .page-head::before, .plans::after {
+  content: ""; position: absolute; left: 0; right: 0; top: 0; bottom: 34px; z-index: 1; pointer-events: none;
+  background: url("img/grain.png") 0 0 / 160px 160px repeat;
+}
+.band.last::before { bottom: 0; }
+@media (min-width: 900px) { .page-head.joined::before { bottom: 0; } }
+footer.site-foot, .site-head { background-image: url("img/grain.png"); background-size: 160px 160px; }
+/* the plans row and the About banner keep a clipped slant, so whatever sits right above them keeps its grain to the bottom edge */
+.page-head:has(+ .plans)::before, .band:has(+ .banner)::before, .page-head:has(+ .banner)::before { bottom: 0; }
+.band, .hero, .page-head, .plans { isolation: isolate; }
+
+/* v100: header owns the status-bar area, so page content never shows above it on iPhone */
+body::before { display: none; }
+.site-head { top: 0; padding-top: env(safe-area-inset-top, 0px); }
+html { scroll-padding-top: calc(120px + env(safe-area-inset-top, 0px)); }
