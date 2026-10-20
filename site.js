@@ -80,14 +80,45 @@
     return '<button class="seg" type="button" data-format="' + f + '" style="--n:' + c + '" aria-pressed="false"><span class="nm">' + f + '</span><span class="ct">' + c + " edits</span></button>";
   }).join("");
 
+  var chipsBuilt = false;
   function sync() {
     var a = document.querySelectorAll("[data-format]");
     for (var i = 0; i < a.length; i++) a[i].setAttribute("aria-pressed", String(a[i].getAttribute("data-format") === state.format));
     var b = document.querySelectorAll("#types button");
     for (var j = 0; j < b.length; j++) b[j].setAttribute("aria-pressed", String(b[j].getAttribute("data-type") === state.type));
-    $("chips").innerHTML = GENRES.map(function (g) {
-      return '<button type="button" class="chip" data-genre="' + esc(g) + '" aria-pressed="' + (state.genres.indexOf(g) >= 0) + '">' + esc(g) + "</button>";
-    }).join("");
+    if (!chipsBuilt) {
+      $("chips").innerHTML = GENRES.map(function (g) {
+        return '<button type="button" class="chip" data-genre="' + esc(g) + '" aria-pressed="false">' + esc(g) + "</button>";
+      }).join("");
+      chipsBuilt = true;
+    }
+    var c = document.querySelectorAll("#chips .chip");
+    for (var k = 0; k < c.length; k++) c[k].setAttribute("aria-pressed", String(state.genres.indexOf(c[k].getAttribute("data-genre")) >= 0));
+  }
+
+  // cards are built once and reused, so thumbnails never reload or flash when the filters change
+  var nodes = {}, grid = $("libgrid"), token = 0, pending = null;
+  var calm = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  function nodeFor(x) {
+    if (!nodes[x.id]) { var t = document.createElement("div"); t.innerHTML = cardHTML(x); nodes[x.id] = t.firstChild; nodes[x.id].setAttribute("data-id", x.id); }
+    return nodes[x.id];
+  }
+  function place(list) {
+    var first = {}, kids = grid.children, i;
+    for (i = 0; i < kids.length; i++) first[kids[i].getAttribute("data-id")] = kids[i].getBoundingClientRect();
+    var keep = {}; list.forEach(function (x) { keep[x.id] = 1; });
+    for (i = kids.length - 1; i >= 0; i--) if (!keep[kids[i].getAttribute("data-id")]) grid.removeChild(kids[i]);
+    list.forEach(function (x) { grid.appendChild(nodeFor(x)); });
+    if (calm || !grid.firstElementChild || !grid.firstElementChild.animate) return;
+    list.forEach(function (x) {
+      var n = nodes[x.id], was = first[x.id], now = n.getBoundingClientRect();
+      if (was) {
+        var dx = was.left - now.left, dy = was.top - now.top;
+        if (Math.abs(dx) > 1 || Math.abs(dy) > 1) n.animate([{ transform: "translate(" + dx + "px," + dy + "px)" }, { transform: "none" }], { duration: 320, easing: "cubic-bezier(.2,.7,.2,1)" });
+      } else {
+        n.animate([{ opacity: 0, transform: "translateY(10px)" }, { opacity: 1, transform: "none" }], { duration: 320, easing: "cubic-bezier(.2,.7,.2,1)" });
+      }
+    });
   }
 
   function render() {
@@ -97,11 +128,23 @@
       if (state.genres.length && state.genres.indexOf(x.genre) < 0) return false;
       return true;
     });
-    $("libgrid").innerHTML = list.map(cardHTML).join("");
     $("empty").hidden = list.length > 0;
     $("count").innerHTML = list.length + (list.length === 1 ? " edit" : " edits") +
       (state.genres.length ? ' <button type="button" class="clear" id="clear1">Clear</button>' : "");
     sync();
+    var my = ++token, keep = {}, leaving = [];
+    if (pending) { clearTimeout(pending); pending = null; }
+    for (var r = 0; r < grid.children.length; r++) { grid.children[r].style.transition = ""; grid.children[r].style.opacity = ""; }
+    list.forEach(function (x) { keep[x.id] = 1; });
+    for (var i = 0; i < grid.children.length; i++) if (!keep[grid.children[i].getAttribute("data-id")]) leaving.push(grid.children[i]);
+    if (calm || !leaving.length || !leaving[0].animate) { place(list); return; }
+    // cards that are going away fade out first, the rest then slide into their new spots
+    leaving.forEach(function (n) { n.style.transition = "opacity .16s ease"; n.style.opacity = "0"; });
+    pending = setTimeout(function () {
+      pending = null;
+      leaving.forEach(function (n) { n.style.transition = ""; n.style.opacity = ""; });
+      if (my === token) place(list);
+    }, 170);
   }
 
   document.addEventListener("click", function (e) {
