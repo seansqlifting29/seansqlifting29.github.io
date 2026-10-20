@@ -914,3 +914,8 @@ html { scroll-padding-top: calc(120px + env(safe-area-inset-top, 0px)); }
 @media (max-width: 700px) {
   .page-head:not(.lib-head):not(.joined):not(.tight) { padding-block: 44px 62px; }
 }
+
+/* v103: when the nav drops to its own row on mobile, spread the links across the full width */
+@media (max-width: 700px) {
+  .links { flex: 1 1 100%; justify-content: space-between; gap: 0; }
+}
