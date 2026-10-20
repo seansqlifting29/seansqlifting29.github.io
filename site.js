@@ -107,12 +107,11 @@
   document.addEventListener("click", function (e) {
     var t = e.target.closest ? e.target.closest("button") : null;
     if (!t) return;
-    if (t.hasAttribute("data-format")) { state.format = t.getAttribute("data-format"); state.genres = []; render(); }
+    if (t.hasAttribute("data-format")) { var f = t.getAttribute("data-format"); state.format = (f === state.format && f !== "All") ? "All" : f; render(); }
     else if (t.hasAttribute("data-type")) { state.type = t.getAttribute("data-type"); render(); }
     else if (t.hasAttribute("data-genre")) {
       var g = t.getAttribute("data-genre");
       state.genres = state.genres.indexOf(g) >= 0 ? [] : [g];
-      state.format = "All";
       render();
     } else if (t.id === "clear1" || t.id === "clear2") { state.genres = []; render(); }
   });

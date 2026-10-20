@@ -840,3 +840,15 @@ a.card:hover h3 { text-decoration: underline; text-underline-offset: 3px; }
 .cta-band.band-blue h2, .cta-band.band-blue .lede { color: var(--frost); }
 .cta-band.band-blue .btn-ghost { color: var(--frost); border-color: var(--frost); background: transparent; }
 .cta-band.band-blue .btn-ghost:hover { background: var(--frost); color: var(--ink); }
+/* v90 library variant: white filters, blue grid with darker cards, white CTA */
+.band-teal.lib-grid { --card: #0B2560; }
+.band-teal.lib-grid .grid .thumb.t0, .band-teal.lib-grid .grid .thumb.t1, .band-teal.lib-grid .grid .thumb.t2, .band-teal.lib-grid .car-track .card .thumb { background: #0B2560; }
+.lib-filter .seg { color: var(--ink); background: rgba(13,12,17,.08); }
+.lib-filter .seg .ct { color: rgba(13,12,17,.7); }
+.lib-filter .seg[aria-pressed="true"] { background: var(--ink); color: var(--frost); }
+.lib-filter .seg[aria-pressed="true"] .ct { color: rgba(244,239,230,.8); }
+.lib-filter .chip { color: var(--ink); border-color: rgba(13,12,17,.4); }
+.lib-filter .chip[aria-pressed="true"] { background: var(--ink); color: var(--frost); border-color: var(--ink); }
+.lib-filter .clear { color: var(--ink); }
+.band.lib-filter { padding-block: 40px 56px !important; }
+.lib-filter .seg[aria-pressed="true"], .lib-filter .chip[aria-pressed="true"] { background: #0B2560; border-color: #0B2560; color: var(--frost); }
