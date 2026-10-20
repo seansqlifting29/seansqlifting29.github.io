@@ -875,3 +875,13 @@ body::after { mix-blend-mode: normal; opacity: .06; transform: translateZ(0); }
 html { overscroll-behavior-y: none; }
 body::after { background-image: url("img/grain.png"); background-size: 160px 160px; opacity: 1; mix-blend-mode: normal; transform: none; will-change: auto; }
 .site-head { transform: translate3d(0, 0, 0); -webkit-backface-visibility: hidden; backface-visibility: hidden; }
+/* v98: slanted section edges drawn with a plain gradient instead of clip-path, so phones don't re-mask big layers while scrolling */
+.band, .band.last {
+  clip-path: none;
+  background-color: transparent;
+  background-image: linear-gradient(to bottom right, transparent calc(50% - .5px), var(--bg) calc(50% + .5px)), linear-gradient(var(--bg), var(--bg));
+  background-size: 100% 33px, 100% calc(100% - 33px);
+  background-position: 0 0, 0 100%;
+  background-repeat: no-repeat;
+}
+@media (min-width: 900px) { .band.about-body { background-image: none; background-color: var(--bg); } }
