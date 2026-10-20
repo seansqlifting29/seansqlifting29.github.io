@@ -869,3 +869,5 @@ a.card:hover h3 { text-decoration: underline; text-underline-offset: 3px; }
 /* v93: scroll smoothness. Plain grain layer (no blend mode), bands on their own layers */
 body::after { mix-blend-mode: normal; opacity: .06; transform: translateZ(0); }
 .thumb.has-img img { backface-visibility: hidden; }
+/* v96: tighter gap between the library intro and the filters on tablet and desktop */
+@media (min-width: 701px) { .page-head.lib-head { padding-bottom: 50px; } }
