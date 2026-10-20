@@ -26,8 +26,8 @@
 .band-blue  { --bg: var(--blue); --fg: var(--frost); --muted: rgba(244,239,230,.84); --line: rgba(244,239,230,.34); --card: var(--ink); --card-fg: var(--frost); --card-muted: rgba(244,239,230,.74); }
 .band-teal  { --bg: var(--teal); --fg: var(--frost); --muted: rgba(244,239,230,.86); --line: rgba(244,239,230,.34); --card: var(--ink); --card-fg: var(--frost); --card-muted: rgba(244,239,230,.74); }
 .band-frost, .hero, .page-head { --bg: var(--frost); --fg: var(--ink); --muted: rgba(13,12,17,.74); --line: rgba(13,12,17,.24); --card: #FBF8F2; --card-fg: var(--ink); --card-muted: rgba(13,12,17,.72); }
-.band { background: var(--bg); color: var(--fg); padding-top: 104px; padding-bottom: 76px; margin-top: -32px; clip-path: polygon(0 32px, 100% 0, 100% 100%, 0 100%); position: relative; }
-.band.last { clip-path: polygon(0 32px, 100% 0, 100% 100%, 0 100%); }
+.band { background: var(--bg); color: var(--fg); padding-top: 104px; padding-bottom: 76px; margin-top: -34px; clip-path: polygon(0 33px, 100% 0, 100% 100%, 0 100%); position: relative; }
+.band.last { clip-path: polygon(0 33px, 100% 0, 100% 100%, 0 100%); }
 
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; scroll-padding-top: 120px; background: var(--ink); }
@@ -247,7 +247,7 @@ body::after { content: ""; position: fixed; inset: 0; z-index: 30; pointer-event
 .foot-icons svg { width: 20px; height: 20px; fill: currentColor; }
 
 /* pricing: three full-height color panels under the same slanted top edge */
-.plans { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); margin-top: -32px; clip-path: polygon(0 32px, 100% 0, 100% 100%, 0 100%); position: relative; }
+.plans { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); margin-top: -34px; clip-path: polygon(0 33px, 100% 0, 100% 100%, 0 100%); position: relative; }
 .plan { display: flex; flex-direction: column; gap: 16px; padding: 112px 40px 112px 40px; color: var(--frost); }
 .plan:first-child { padding-left: max(16px, calc((100vw - 1120px) / 2 + 16px)); }
 .plan:last-child { padding-right: max(16px, calc((100vw - 1120px) / 2 + 16px)); }
@@ -294,7 +294,7 @@ a.card:hover h3 { text-decoration: underline; text-underline-offset: 3px; }
 .mark-icon { width: 38px; height: 38px; border-radius: 8px; object-fit: cover; display: block; }
 
 /* bottom banner: the painting, used on two pages only */
-.banner { position: relative; margin-top: -32px; height: clamp(240px, 22vw, 340px); clip-path: polygon(0 32px, 100% 0, 100% 100%, 0 100%); background: var(--ink); overflow: hidden; }
+.banner { position: relative; margin-top: -34px; height: clamp(240px, 22vw, 340px); clip-path: polygon(0 33px, 100% 0, 100% 100%, 0 100%); background: var(--ink); overflow: hidden; }
 .banner img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 60% 50%; }
 .banner-in { position: absolute; inset: 0; margin-inline: auto; }
 .banner .curve { position: absolute; left: 0; right: 0; top: 76px; bottom: 56px; width: 100%; height: calc(100% - 132px); overflow: visible; }
@@ -771,11 +771,11 @@ a.card:hover h3 { text-decoration: underline; text-underline-offset: 3px; }
 /* manual switch: near instant */
 .rv.fast .rv-item, .rv.fast .rv-item.on { transition: opacity .12s ease, visibility 0s; }
 .feat-more { width: 100%; display: flex; justify-content: center; }
-.band.band-teal.reviews { margin-top: -32px; }
+.band.band-teal.reviews { margin-top: -34px; }
 /* thin cream band between featured works and the quotes, so the cuts alternate red / cream / blue */
 .band.gap-band { padding: 0; height: 104px; }
 /* home: cream quotes, blue closing call to action */
-.band.band-frost.reviews { margin-top: -32px; }
+.band.band-frost.reviews { margin-top: -34px; }
 .reviews .rv-item blockquote p, .reviews .rv-item figcaption strong { color: var(--ink); }
 .reviews .rv-item figcaption span { color: rgba(13,12,17,.74); }
 .reviews .rv-item figcaption small { color: rgba(13,12,17,.58); }
@@ -852,3 +852,20 @@ a.card:hover h3 { text-decoration: underline; text-underline-offset: 3px; }
 .lib-filter .clear { color: var(--ink); }
 .band.lib-filter { padding-block: 40px 56px !important; }
 .lib-filter .seg[aria-pressed="true"], .lib-filter .chip[aria-pressed="true"] { background: #0B2560; border-color: #0B2560; color: var(--frost); }
+/* v93: library filters on one row for small screens, tighter top gap */
+@media (max-width: 700px) {
+  .band.lib-filter { padding-block: 40px 44px !important; }
+  .lib-filter .chips { gap: 6px; }
+  .lib-filter .chip { font-size: .84rem; padding: 7px 11px; }
+  .lib-filter .timeline { flex-wrap: nowrap; gap: 4px; margin-top: 0; }
+  .lib-filter .tl-track { flex: 1 1 0; flex-basis: 0; gap: 4px; }
+  .lib-filter .seg { min-width: 0; padding: 10px 8px 11px; }
+  .lib-filter .tl-all { min-width: 0; flex: 0 0 auto; }
+  .lib-filter .seg .nm { font-size: .95rem; }
+  .lib-filter .seg .ct { font-size: .68rem; white-space: nowrap; }
+  .lib-filter .filters { margin-top: 18px; }
+}
+@media (min-width: 701px) and (max-width: 1000px) { .band.lib-filter { padding-block: 40px 48px !important; } }
+/* v93: scroll smoothness. Plain grain layer (no blend mode), bands on their own layers */
+body::after { mix-blend-mode: normal; opacity: .06; transform: translateZ(0); }
+.thumb.has-img img { backface-visibility: hidden; }
