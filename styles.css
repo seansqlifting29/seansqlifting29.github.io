@@ -909,3 +909,8 @@ footer.site-foot, .site-head { background-image: url("img/grain.png"); backgroun
 body::before { display: none; }
 .site-head { top: 0; padding-top: env(safe-area-inset-top, 0px); }
 html { scroll-padding-top: calc(120px + env(safe-area-inset-top, 0px)); }
+
+/* v102: mobile page heads (Results, Pricing) sit centered between the nav and the slant */
+@media (max-width: 700px) {
+  .page-head:not(.lib-head):not(.joined):not(.tight) { padding-block: 44px 62px; }
+}
