@@ -871,3 +871,7 @@ body::after { mix-blend-mode: normal; opacity: .06; transform: translateZ(0); }
 .thumb.has-img img { backface-visibility: hidden; }
 /* v96: tighter gap between the library intro and the filters on tablet and desktop */
 @media (min-width: 701px) { .page-head.lib-head { padding-bottom: 50px; } }
+/* v97 stability: no scroll-time repaints. Grain is a small static PNG, the nav gets its own layer, no bounce at the page ends. */
+html { overscroll-behavior-y: none; }
+body::after { background-image: url("img/grain.png"); background-size: 160px 160px; opacity: 1; mix-blend-mode: normal; transform: none; will-change: auto; }
+.site-head { transform: translate3d(0, 0, 0); -webkit-backface-visibility: hidden; backface-visibility: hidden; }
