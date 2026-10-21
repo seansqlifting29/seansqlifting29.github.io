@@ -22,7 +22,7 @@
     var big = esc(hasStats ? short(x.views) : one) + (hasStats ? '<span class="u"> views</span>' : "");
     var sm = hasStats ? "views" : "";
     return '<a class="card" href="' + x.link + '" target="_blank" rel="noopener"><div class="thumb' + (th ? ' has-img' : '') + ' t' + k + '">' +
-      (th ? '<img alt="" loading="lazy" referrerpolicy="no-referrer" src="' + th[0] + '" data-n="0" data-srcs="' + th.join("|") + '" data-vert="' + (x.ratio === "9 / 16" ? 1 : 0) + '" onload="thumbOk(this)" onerror="thumbNext(this)">' : '') + '<span class="big">' + big + '</span>' + (sm ? '<span class="sm">' + sm + '</span>' : '') + "</div>" +
+      (th ? '<img alt="" loading="lazy" referrerpolicy="no-referrer" src="' + th[0] + '" data-n="0" data-srcs="' + th.join("|") + '" data-vert="' + (x.ratio === "9 / 16" && !x.thumb ? 1 : 0) + '"' + (x.pos ? ' style="object-position:' + x.pos + ';transform-origin:' + x.pos + '"' : '') + ' onload="thumbOk(this)" onerror="thumbNext(this)">' : '') + '<span class="big">' + big + '</span>' + (sm ? '<span class="sm">' + sm + '</span>' : '') + "</div>" +
       '<div class="card-body"><h3>' + esc(x.title) + '</h3><div class="client">' + esc(x.client) + "</div></div></a>";
   }
 
