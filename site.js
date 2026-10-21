@@ -295,3 +295,23 @@ document.addEventListener("click", function (e) {
     new IntersectionObserver(function (en) { if (en[0].isIntersecting) start(); else { clearInterval(timer); timer = null; } }, { threshold: 0.3 }).observe(box);
   } else start();
 })();
+
+// phone menu: full-screen page list
+(function () {
+  var btn = document.querySelector(".menu-btn"), menu = document.getElementById("menu");
+  if (!btn || !menu) return;
+  var closeBtn = menu.querySelector(".menu-close"), root = document.documentElement;
+  function setOpen(on) {
+    menu.classList.toggle("open", on);
+    menu.setAttribute("aria-hidden", String(!on));
+    btn.setAttribute("aria-expanded", String(on));
+    root.classList.toggle("menu-lock", on);
+    if (on && closeBtn) closeBtn.focus(); else if (!on && document.activeElement && menu.contains(document.activeElement)) btn.focus();
+  }
+  btn.addEventListener("click", function () { setOpen(true); });
+  closeBtn.addEventListener("click", function () { setOpen(false); });
+  menu.addEventListener("click", function (e) { var a = e.target.closest ? e.target.closest("a") : null; if (a) setOpen(false); });
+  document.addEventListener("keydown", function (e) { if (e.key === "Escape" && menu.classList.contains("open")) setOpen(false); });
+  window.addEventListener("resize", function () { if (window.innerWidth > 700 && menu.classList.contains("open")) setOpen(false); });
+  window.addEventListener("pageshow", function () { if (menu.classList.contains("open")) setOpen(false); });
+})();
