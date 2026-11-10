@@ -1,6 +1,6 @@
 # seantyndale.com
 
-Personal portfolio — Creative Developer.
+Personal portfolio — Video Editor.
 
 ## Live Site
 [seantyndale.com](https://seantyndale.com)
